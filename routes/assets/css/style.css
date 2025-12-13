@@ -1,0 +1,130 @@
+/* --- WRAPPER LAYOUT --- */
+.wrapper {
+    display: flex;
+    background: #151515;
+    min-height: 100vh;
+    color: #fff;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 260px;
+    background: #0D0D0D;
+    padding: 20px;
+    border-right: 2px solid #232323;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-decor {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    opacity: 0.8;
+}
+
+.brand {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+}
+
+.menu li i {
+    font-size: 18px;
+}
+
+.menu li.active {
+    background: #00D34033;
+    border: 1px solid #00D340;
+    color: #00D340;
+}
+
+/* --- CONTENT AREA --- */
+.content {
+    flex: 1;
+    padding: 30px;
+    background: #1F1F1F;
+    border-left: 3px solid #101010;
+}
+
+/* --- TITLES --- */
+.page-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* --- CUSTOM CARD --- */
+.card-custom {
+    background: #2B2B2B;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.card-custom h6 {
+    margin-bottom: 15px;
+}
+
+/* --- VIDEO EMBED --- */
+.camera-video {
+    width: 100%;
+    border-radius: 12px;
+}
+
+/* --- FORM --- */
+.input-custom {
+    background: #3A3A3A;
+    border: 1px solid #555;
+    color: white;
+}
+
+.btn-save {
+    margin-top: 20px;
+    background: #00D340;
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    float: right;
+}
+
+/* --- MONITORING GRID --- */
+.monitor-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.monitor-item {
+    background: #1B1B1B;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.monitor-item .label {
+    color: #8f8f8f;
+}
+
+.monitor-item .value {
+    font-size: 22px;
+    margin-top: 10px;
+}
