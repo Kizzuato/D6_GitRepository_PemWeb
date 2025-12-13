@@ -122,7 +122,9 @@
                     <span>Latitude</span>
                   </div>
                   <div class="card-body text-center">
-                    <h4 class="mb-0">6.61112</h4>
+                    <h4 class="mb-0">
+                      {{ $sensor->latitude ?? '-' }}
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -135,7 +137,9 @@
                     <span>Longitude</span>
                   </div>
                   <div class="card-body text-center">
-                    <h4 class="mb-0">-8.90211</h4>
+                    <h4 class="mb-0">
+                      {{ $sensor->longitude ?? '-' }}
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -148,7 +152,9 @@
                     <span>Daya (kWh)</span>
                   </div>
                   <div class="card-body text-center">
-                    <h4 class="mb-0">80 kWh</h4>
+                    <h4 class="mb-0">
+                      {{ $sensor->daya ?? '-' }}
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -160,7 +166,9 @@
                     Accelerometer X
                   </div>
                   <div class="card-body text-center">
-                    <h4 class="mb-0">0.12</h4>
+                    <h4 class="mb-0">
+                      {{ $sensor->accelx ?? '-' }}
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -172,7 +180,9 @@
                     Accelerometer Y
                   </div>
                   <div class="card-body text-center">
-                    <h4 class="mb-0">-0.03</h4>
+                    <h4 class="mb-0">
+                      {{ $sensor->accely ?? '-' }}
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -184,7 +194,9 @@
                     Accelerometer Z
                   </div>
                   <div class="card-body text-center">
-                    <h4 class="mb-0">0.93</h4>
+                    <h4 class="mb-0">
+                      {{ $sensor->accelz ?? '-' }}
+                    </h4>
                   </div>
                 </div>
               </div>
