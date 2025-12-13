@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SensorController;
+use App\Http\Controllers\LogTableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +19,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard'); 
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->name('dashboard'); 
 
 Route::get('/dashboard', [SensorController::class, 'dashboard'])
     ->name('dashboard');
 
+
+Route::get('/table-data', function () {
+    return view('table-data');
+})->name('table-data');

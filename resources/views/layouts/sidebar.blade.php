@@ -23,7 +23,7 @@
 
       {{-- Tables / Data --}}
       <li class="nav-item">
-        <a class="nav-link {{ request()->is('tables') ? 'active' : '' }}" href="">
+        <a class="nav-link {{ request()->is('tables') ? 'active' : '' }}" href="/table-data">
           <div class="icon icon-shape icon-sm bg-gradient-warning shadow-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="ni ni-calendar-grid-58 text-white text-sm opacity-10"></i>
           </div>
