@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +25,9 @@ Route::get('/register', function () {
 })->name('register');
 
 // Route Dashboard
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
+Route::get('/fetch-data', [DashboardController::class, 'fetchData'])->name('fetch.data');
 
 // Route Tabel Data
 Route::get('/table-data', function () {
