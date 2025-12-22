@@ -1,30 +1,43 @@
 <aside class="sidenav navbar navbar-vertical navbar-expand-xs fixed-start" id="sidenav-main">
-  <div class="sidenav-header">
-    <a class="navbar-brand text-white m-0 d-flex align-items-center" href="{{ route('dashboard') }}">
-      <img src="{{ asset('assets/img/forte.png') }}" class="navbar-brand-img h-100" alt="logo">
-    </a>
-  </div>
-  <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
-    <ul class="navbar-nav">
-
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-          <div class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="ni ni-tv-2 text-white text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1 text-white">Dashboard</span>
+    <div class="sidenav-header">
+        <a class="navbar-brand text-white m-0 d-flex align-items-center" href="{{ route('dashboard') }}">
+            <img src="{{ asset('assets/img/forte.png') }}" class="navbar-brand-img h-100" alt="logo">
         </a>
-      </li>
+    </div>
+    <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
+        <ul class="navbar-nav">
 
-      <li class="nav-item">
-        <a class="nav-link {{ request()->is('table-data') ? 'active' : '' }}" href="/table-data">
-          <div class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-            <i class="ni ni-calendar-grid-58 text-white text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1 text-white">Tables</span>
-        </a>
-      </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                    href="{{ route('dashboard') }}">
+                    <div
+                        class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-tv-2 text-white fs-4 text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1 text-white">Dashboard</span>
+                </a>
+            </li>
 
-    </ul>
-  </div>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('map') ? 'active' : '' }}" href="/map">
+                    <div
+                        class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-map text-white fs-4 text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1 text-white">Peta</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('table-data') ? 'active' : '' }}" href="/table-data">
+                    <div
+                        class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-calendar-grid-58 text-white fs-4 text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1 text-white">Tables</span>
+                </a>
+            </li>
+
+        </ul>
+    </div>
 </aside>

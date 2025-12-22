@@ -32,6 +32,10 @@ Route::get('/fetch-data', [DashboardController::class, 'fetchData'])->name('fetc
 Route::get('/camera/status', [DashboardController::class, 'cameraStatus'])
     ->name('camera.status');
 
+// Route Tabel Data
+Route::get('/map', function () {
+    return view('map');
+})->name('map');
 
 // Route Tabel Data
 Route::get('/table-data', function () {

@@ -310,7 +310,7 @@
         }
 
         // contoh dummy
-        setRPM(83)
+        setRPM(10)
         setBattery(50);
 
         initCamera();
