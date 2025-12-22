@@ -11,6 +11,7 @@
     <link href="{{ asset('../assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('../assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Argon Dashboard CSS -->
     <link id="pagestyle" href="{{ asset('../assets/css/argon-dashboard.css?v=2.0.4') }}" rel="stylesheet" />

@@ -28,6 +28,10 @@ Route::get('/register', function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 Route::get('/fetch-data', [DashboardController::class, 'fetchData'])->name('fetch.data');
+// routes/web.php
+Route::get('/camera/status', [DashboardController::class, 'cameraStatus'])
+    ->name('camera.status');
+
 
 // Route Tabel Data
 Route::get('/table-data', function () {
