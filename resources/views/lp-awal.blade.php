@@ -164,30 +164,14 @@
             <a class="navbar-brand" href="#">
                 <img src="{{ asset('assets/img/FORTE.png') }}" alt="FORTE Logo">
             </a>
-
-            <button class="navbar-toggler bg-secondary" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav align-items-center">
                     <li class="nav-item"><a class="nav-link" href="#">Connection</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Setting</a></li>
+                    <li class="nav-item"><a class="nav-link" href="setting">Setting</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Abouth Rover</a></li>
-
-                    @if (Route::has('login'))
-                        @auth
-                            <li class="nav-item"><a class="nav-link" href="{{ url('/dashboard') }}">Dashboard</a></li>
-                        @else
-                            <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link btn-daftar-nav" href="{{ route('register') }}">Daftar</a>
-                                </li>
-                            @endif
-                        @endauth
-                    @endif
+                    <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link btn-daftar-nav" href="{{ route('register') }}">Daftar</a>
+                    </li>
                 </ul>
             </div>
         </div>

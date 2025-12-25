@@ -44,5 +44,17 @@ Route::get('/table-data', function () {
 
 // Route Tampilan Awal
 Route::get('/awal', function () {
-    return view('awal');
+    return view('lp-awal');
 })->name('awal');
+
+// Route Tampilan Setting
+Route::get('/setting', function () {
+    return view('lp-setting');
+})->name('setting');
+// Route Tampilan Setting/wifi
+Route::get('wifi', function () {
+    return view('lp-setting-wifi');
+})->name('wifi');
+Route::get('/controller', function () {
+    return view('lp-setting-controller');
+})->name('controller');
