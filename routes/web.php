@@ -41,3 +41,8 @@ Route::get('/map', function () {
 Route::get('/table-data', function () {
     return view('table-data');
 })->name('table-data');
+
+// Route Tampilan Awal
+Route::get('/awal', function () {
+    return view('awal');
+})->name('awal');
