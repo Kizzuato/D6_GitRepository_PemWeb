@@ -183,8 +183,8 @@
             <div class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav align-items-center">
                     <li class="nav-item"><a class="nav-link" href="#">Connection</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Setting</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Abouth Rover</a></li>
+                    <li class="nav-item"><a class="nav-link" href="setting">Setting</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about">Abouth Rover</a></li>
 
 
                     </li>

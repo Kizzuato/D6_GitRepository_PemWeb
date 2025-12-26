@@ -58,3 +58,8 @@ Route::get('wifi', function () {
 Route::get('/controller', function () {
     return view('lp-setting-controller');
 })->name('controller');
+
+// route Tampilan About
+Route::get('/about', function () {
+    return view('lp-about');
+})->name('about');

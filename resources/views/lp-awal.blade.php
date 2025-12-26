@@ -168,7 +168,7 @@
                 <ul class="navbar-nav align-items-center">
                     <li class="nav-item"><a class="nav-link" href="#">Connection</a></li>
                     <li class="nav-item"><a class="nav-link" href="setting">Setting</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Abouth Rover</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about">Abouth Rover</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
                     <li class="nav-item"><a class="nav-link btn-daftar-nav" href="{{ route('register') }}">Daftar</a>
                     </li>
