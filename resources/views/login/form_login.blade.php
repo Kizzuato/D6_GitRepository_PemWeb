@@ -143,14 +143,14 @@
 
     <nav class="navbar navbar-expand-lg navbar-forte">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/">
                 <img src="{{ asset('assets/img/FORTE.png') }}" alt="FORTE Logo">
             </a>
             <div class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="#">Connection</a></li>
+                    {{-- <li class="nav-item"><a class="nav-link" href="dashboard">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="setting">Setting</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about">Abouth Rover</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about">Abouth Rover</a></li> --}}
                     <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
                     <li class="nav-item"><a class="nav-link btn-daftar-nav" href="{{ route('register') }}">Daftar</a>
                     </li>

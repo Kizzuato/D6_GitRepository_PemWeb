@@ -10,8 +10,13 @@ use App\Http\Controllers\DashboardController;
 */
 
 // Halaman Utama diarahkan langsung ke Login
+// Route::get('/', function () {
+//     return view('login.form_login');
+// });
+
+// Route Tampilan Awal
 Route::get('/', function () {
-    return view('login.form_login');
+    return view('lp-awal');
 });
 
 // Route Login
@@ -43,9 +48,9 @@ Route::get('/table-data', function () {
 })->name('table-data');
 
 // Route Tampilan Awal
-Route::get('/awal', function () {
-    return view('lp-awal');
-})->name('awal');
+// Route::get('/awal', function () {
+//     return view('lp-awal');
+// })->name('awal');
 
 // Route Tampilan Setting
 Route::get('/setting', function () {
