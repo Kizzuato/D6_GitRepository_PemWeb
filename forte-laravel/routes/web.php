@@ -1,32 +1,104 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\LogTableController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| PUBLIC ROUTES (tanpa login)
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
+// Landing page
 Route::get('/', function () {
-    return view('welcome');
+    return view('lp-awal');
+})->name('home');
+
+// About
+Route::get('/about', function () {
+    return view('lp-about');
+})->name('about');
+
+// Login & Register
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login.process');
+
+Route::get('/register', function () {
+    return view('login.form_register');
+})->name('register');
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/register', [LoginController::class, 'register'])
+    ->name('register.process');
+
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATED USER ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // Fetch realtime / camera
+    Route::get('/fetch-data', [DashboardController::class, 'fetchData'])
+        ->name('fetch.data');
+
+    Route::get('/camera/status', [DashboardController::class, 'cameraStatus'])
+        ->name('camera.status');
+
+    // Sensor dashboard (kalau masih dipakai)
+    Route::get('/sensor/dashboard', [SensorController::class, 'dashboard'])
+        ->name('sensor.dashboard');
+
+    // Map & Table
+    Route::get('/map', function () {
+        return view('map');
+    })->name('map');
+
+    Route::get('/table-data', [LogTableController::class, 'index'])
+        ->name('table-data');
+
+    // Settings
+    Route::get('/setting', function () {
+        return view('lp-setting');
+    })->name('setting');
+
+    Route::get('/wifi', function () {
+        return view('lp-setting-wifi');
+    })->name('wifi');
+
+    Route::get('/controller', function () {
+        return view('lp-setting-controller');
+    })->name('controller');
+
+    /*
+    |--------------------------------------------------------------------------
+    | REPORT (LAPORAN)
+    |--------------------------------------------------------------------------
+    */
+
+    // Simpan laporan (gambar + title + desc + lat long dummy)
+    Route::post('/report', [ReportController::class, 'store'])
+        ->name('report.store');
 });
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->name('dashboard'); 
+/*
+|--------------------------------------------------------------------------
+| ADMIN ONLY ROUTES
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/dashboard', [SensorController::class, 'dashboard'])
-    ->name('dashboard');
+Route::middleware(['auth', 'admin'])->group(function () {
 
-
-Route::get('/table-data', function () {
-    return view('table-data');
-})->name('table-data');
+    // CRUD User (khusus admin)
+    Route::resource('/users', UserController::class);
+});

@@ -1,111 +1,60 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="row gap-4">
+        <div class="card bg-dark text-white"> {{-- Monitoring Card --}}
+            <div class="mx-4 mt-2 d-flex justify-content-between">
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    {{-- Front Camera --}}
+                    <div class="col-md-6">
+                        <h6 class="text-white mb-2">
+                            <i class="bi bi-camera text-white fs-5"></i> Live Front Camera
+                        </h6>
+                        <div class="card bg-secondary p-2 text-center">
+                            <img id="frontImg" class="img-fluid rounded d-none">
+                            <video id="frontVid" class="w-100 rounded d-none" autoplay muted playsinline></video>
+                            <small id="frontStatus" class="text-muted"></small>
+                        </div>
+                    </div>
 
-<div class="card bg-dark text-white">
-  <div class="row">
-    <!-- <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-          <div class="card-body p-3">
-            <div class="row">
-              <div class="col-8">
-                <div class="numbers">
-                  <p class="text-sm mb-0 text-uppercase font-weight-bold">Today's Money</p>
-                  <h5 class="font-weight-bolder">
-                    $53,000
-                  </h5>
-                  <p class="mb-0">
-                    <span class="text-success text-sm font-weight-bolder">+55%</span>
-                    since yesterday
-                  </p>
+                    {{-- Back Camera --}}
+                    <div class="col-md-6">
+                        <h6 class="text-white mb-2 ">
+                            <i class="bi bi-camera text-white fs-5"></i> Live Back Camera
+                        </h6>
+                        <div class="card bg-secondary p-2 text-center">
+                            <img id="backImg" class="img-fluid rounded d-none">
+                            <video id="backVid" class="w-100 rounded d-none" autoplay muted playsinline></video>
+                            <small id="backStatus" class="text-muted"></small>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="col-4 text-end">
-                <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                  <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-                </div>
-              </div>
+
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-          <div class="card-body p-3">
-            <div class="row">
-              <div class="col-8">
-                <div class="numbers">
-                  <p class="text-sm mb-0 text-uppercase font-weight-bold">Today's Users</p>
-                  <h5 class="font-weight-bolder">
-                    2,300
-                  </h5>
-                  <p class="mb-0">
-                    <span class="text-success text-sm font-weight-bolder">+3%</span>
-                    since last week
-                  </p>
+            {{-- sec lapor annomali --}}
+            <div class="mb-4">
+                <div class="card-body">
+                    <div class="bg-transparent border-0 mb-4">
+                        Laporkan Anomali
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            Nama Anomali
+                            <input class="form-control bg-dark mt-2 text-white" placeholder="Nama Anomali">
+                        </div>
+                        <div class="col-md-8">
+                            Deskripsi Anomali
+                            <textarea class="form-control bg-dark mt-2 text-white" rows="3" placeholder="Deskripsi"></textarea>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success float-end">Simpan Data</button>
                 </div>
-              </div>
-              <div class="col-4 text-end">
-                <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
-                  <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
-                </div>
-              </div>
             </div>
-          </div>
+
         </div>
-      </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-          <div class="card-body p-3">
-            <div class="row">
-              <div class="col-8">
-                <div class="numbers">
-                  <p class="text-sm mb-0 text-uppercase font-weight-bold">New Clients</p>
-                  <h5 class="font-weight-bolder">
-                    +3,462
-                  </h5>
-                  <p class="mb-0">
-                    <span class="text-danger text-sm font-weight-bolder">-2%</span>
-                    since last quarter
-                  </p>
-                </div>
-              </div>
-              <div class="col-4 text-end">
-                <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-                  <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-sm-6">
-        <div class="card">
-          <div class="card-body p-3">
-            <div class="row">
-              <div class="col-8">
-                <div class="numbers">
-                  <p class="text-sm mb-0 text-uppercase font-weight-bold">Sales</p>
-                  <h5 class="font-weight-bolder">
-                    $103,430
-                  </h5>
-                  <p class="mb-0">
-                    <span class="text-success text-sm font-weight-bolder">+5%</span> than last month
-                  </p>
-                </div>
-              </div>
-              <div class="col-4 text-end">
-                <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
-                  <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-    {{-- Monitoring Card --}}
-    <div class="row mb-4">
-      <div class="col-12">
         <div class="card bg-dark text-white">
           <div class="card-header pb-0">
             <h6 class="text-white mb-0">Monitoring Card</h6>
@@ -202,59 +151,190 @@
               </div>
 
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <div class="row mt-4">
 
-    <div class="col-lg-5">
-      <div class="card card-carousel overflow-hidden h-100 p-0">
-        <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
-          <div class="carousel-inner border-radius-lg h-100">
-            <div class="carousel-item h-100 active" style="background-image: url('../assets/img/carousel-1.jpg');
-    background-size: cover;">
-              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-camera-compact text-dark opacity-10"></i>
+        <div class="card bg-dark text-white">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <h6 class="text-white mb-2">
+                            <i class="bi bi-speedometer text-white fs-5"></i> RPM Diagram
+                        </h6>
+                        <div class="card bg-secondary ">
+                            <div class="card-body text-center">
+
+                                <div class="d-flex justify-content-center">
+                                    <svg width="260" height="140" viewBox="0 0 260 140">
+                                        <!-- Background arc -->
+                                        <path d="M20,120 A110,110 0 0 1 240,120" stroke="#333" stroke-width="16"
+                                            fill="none" />
+
+                                        <!-- Progress arc -->
+                                        <path id="rpmArc" d="M20,120 A110,110 0 0 1 240,120" stroke="#28a745"
+                                            stroke-width="16" fill="none" stroke-dasharray="345"
+                                            stroke-dashoffset="345" stroke-linecap="round" />
+
+                                        <!-- Text -->
+                                        <text x="130" y="95" text-anchor="middle" font-size="36" fill="#fff"
+                                            id="rpmValue">0</text>
+
+                                        <text x="130" y="120" text-anchor="middle" font-size="12" fill="#aaa">RPM
+                                            × 1000/min</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-white mb-2">
+                            <i class="bi bi-battery text-white fs-5"></i> Battery Status
+                        </h6>
+                        <div class="card bg-secondary ">
+                            <div class="card-body text-center">
+                                <svg width="140" height="140">
+                                    <circle cx="70" cy="70" r="60" stroke="#333" stroke-width="12"
+                                        fill="none" />
+
+                                    <circle id="batteryArc" cx="70" cy="70" r="60" stroke="#28a745"
+                                        stroke-width="12" fill="none" stroke-dasharray="377" stroke-dashoffset="377"
+                                        stroke-linecap="round" transform="rotate(-90 70 70)" />
+
+                                    <text x="70" y="78" text-anchor="middle" font-size="28" fill="#fff"
+                                        id="batteryValue">0%</text>
+                                </svg>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h5 class="text-white mb-1">Get started with Argon</h5>
-                <p>There’s nothing I really wanted to do in life that I wasn’t able to get good at.</p>
-              </div>
             </div>
-            <div class="carousel-item h-100" style="background-image: url('../assets/img/carousel-2.jpg');
-    background-size: cover;">
-              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-bulb-61 text-dark opacity-10"></i>
-                </div>
-                <h5 class="text-white mb-1">Faster way to create web pages</h5>
-                <p>That’s my skill. I’m not really specifically talented at anything except for the ability to learn.</p>
-              </div>
-            </div>
-            <div class="carousel-item h-100" style="background-image: url('../assets/img/carousel-3.jpg');
-    background-size: cover;">
-              <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
-                  <i class="ni ni-trophy text-dark opacity-10"></i>
-                </div>
-                <h5 class="text-white mb-1">Share with us your design tips!</h5>
-                <p>Don’t be afraid to be wrong because you can’t learn anything from a compliment.</p>
-              </div>
-            </div>
-          </div>
-          <button class="carousel-control-prev w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next w-5 me-3" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
         </div>
-      </div>
     </div>
-  </div>
-</div>
+
+    <script>
+        let polling = null;
+
+        function fetchData() {
+            fetch("{{ route('fetch.data') }}")
+                .then(res => res.json())
+                .then(res => {
+
+                    if (res.status === 'offline') {
+                        console.warn('Raspi offline, stop polling');
+                        stopPolling();
+                        showOffline();
+                        return;
+                    }
+
+                    const data = res.data;
+
+                    document.getElementById('status').className = 'badge bg-success';
+                    document.getElementById('status').innerText = 'ONLINE';
+
+                    document.getElementById('latitude').innerText = data?.gps?.lat ?? '-';
+                    document.getElementById('longitude').innerText = data?.gps?.lon ?? '-';
+                    document.getElementById('daya').innerText = data?.daya ?? '-';
+
+                    document.getElementById('acc_x').innerText = data?.imu?.acc?.[0] ?? '-';
+                    document.getElementById('acc_y').innerText = data?.imu?.acc?.[1] ?? '-';
+                    document.getElementById('acc_z').innerText = data?.imu?.acc?.[2] ?? '-';
+                })
+                .catch(err => {
+                    console.error(err);
+                    stopPolling();
+                });
+        }
+
+        function startPolling() {
+            if (!polling) {
+                polling = setInterval(fetchData, 1000); // JANGAN 200ms
+            }
+        }
+
+        function stopPolling() {
+            clearInterval(polling);
+            polling = null;
+        }
+
+        function showOffline() {
+            document.querySelectorAll('h4').forEach(el => {
+                el.innerText = '-';
+            });
+        }
+
+        async function startLaptopCamera(videoEl) {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true
+            });
+            videoEl.srcObject = stream;
+            videoEl.classList.remove('d-none');
+        }
+
+        async function initCamera() {
+            const res = await fetch("{{ route('camera.status') }}");
+            const cam = await res.json();
+
+            // FRONT
+            if (cam.front) {
+                frontImg.src = cam.front_url;
+                frontImg.classList.remove('d-none');
+                frontStatus.innerText = "Raspi Camera";
+            } else {
+                await startLaptopCamera(frontVid);
+                frontStatus.innerText = "Laptop Camera";
+            }
+
+            // BACK
+            if (cam.back) {
+                backImg.src = cam.back_url;
+                backImg.classList.remove('d-none');
+                backStatus.innerText = "Raspi Camera";
+            } else {
+                await startLaptopCamera(backVid);
+                backStatus.innerText = "Laptop Camera";
+            }
+        }
+
+        function setRPM(value, max = 100) {
+            const arc = document.getElementById('rpmArc');
+            const text = document.getElementById('rpmValue');
+
+            const circumference = 345;
+            const percent = Math.min(value / max, 1);
+            const offset = circumference * (1 - percent);
+
+            arc.style.strokeDashoffset = offset;
+            text.innerText = value;
+
+            // warna dinamis
+            if (percent < 0.6) arc.style.stroke = '#28a745';
+            else if (percent < 0.85) arc.style.stroke = '#ffc107';
+            else arc.style.stroke = '#dc3545';
+        }
+
+        function setBattery(percent) {
+            const arc = document.getElementById('batteryArc');
+            const text = document.getElementById('batteryValue');
+
+            const circumference = 377;
+            const offset = circumference * (1 - percent / 100);
+
+            arc.style.strokeDashoffset = offset;
+            text.innerText = percent + '%';
+
+            if (percent > 60) arc.style.stroke = '#28a745';
+            else if (percent > 30) arc.style.stroke = '#ffc107';
+            else arc.style.stroke = '#dc3545';
+        }
+
+        // contoh dummy
+        setRPM(10)
+        setBattery(50);
+
+        initCamera();
+
+        // mulai polling
+        startPolling();
+        fetchData();
+    </script>
 @endsection

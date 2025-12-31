@@ -16,9 +16,9 @@ return new class extends Migration
             $table->float('latitude')->nullable();;
             $table->float('longitude')->nullable();;
             $table->float('daya')->nullable();;
-            $table->float('accelerometerx')->nullable();;
-            $table->float('accelerometery')->nullable();;
-            $table->float('accelerometerz')->nullable();;
+            $table->float('accelx')->nullable();;
+            $table->float('accely')->nullable();;
+            $table->float('accelz')->nullable();;
             $table->string('zone')->nullable();;
             $table->string('anomaly')->nullable();;
             $table->string('description')->nullable();;

@@ -1,7 +1,151 @@
-.nav-link {
-    color: #fff !important;
+/* =================================================
+   ROOT COLOR SYSTEM
+================================================= */
+:root {
+  --bg-main: #0f0f0f;
+  --bg-surface: #161616;
+  --bg-surface-2: #1c1c1c;
+  --border-soft: #2a2a2a;
+
+  --green-main: #05ff0d;
+  --green-soft: rgba(5, 255, 13, 0.3);
+
+  --text-main: #ffffff;
+  --text-muted: #b5b5b5;
 }
-.nav-link.active {
-    background-color: #1f2833 !important;
-    color: #fff !important;
+
+/* =================================================
+   GLOBAL
+================================================= */
+body.dark-version {
+  background-color: var(--bg-main) !important;
+  color: var(--text-main);
+}
+
+.main-content {
+  background-color: var(--bg-main) !important;
+}
+
+/* =================================================
+   SIDEBAR — TRUE BLACK (NO BLUE ARGON)
+================================================= */
+.sidenav,
+.navbar-vertical,
+#sidenav-main {
+  background-color: var(--bg-surface-2) !important;
+}
+
+/* HILANGKAN OVERLAY & GRADIENT ARGON */
+.sidenav::before,
+.navbar-vertical::before {
+  display: none !important;
+  background: none !important;
+}
+
+/* HEADER SIDEBAR (LOGO AREA) */
+.sidenav-header {
+  background-color: var(--bg-surface-2) !important;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+/* GARIS PEMBATAS */
+hr.horizontal.light {
+  background-image: none !important;
+  background-color: var(--border-soft) !important;
+  opacity: 1;
+}
+
+/* =================================================
+   SIDEBAR NAV LINK
+================================================= */
+.sidenav .nav-link {
+  color: var(--text-main) !important;
+  border-radius: 12px;
+  margin: 0.25rem 0.75rem;
+  transition: all 0.2s ease;
+}
+
+/* HOVER */
+.sidenav .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ACTIVE */
+.sidenav .nav-link.active {
+  background-color: var(--green-soft) !important;
+  color: var(--text-main) !important;
+}
+
+/* ICON */
+.sidenav .nav-link i {
+  color: var(--text-main) !important;
+  opacity: 0.9;
+}
+
+/* TEXT MENU */
+.sidenav .nav-link-text {
+  color: var(--text-main) !important;
+}
+
+/* =================================================
+   CARD — GLOBAL
+================================================= */
+.card {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+}
+
+.card-header {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+/* =================================================
+   MONITORING CARD (INNER)
+================================================= */
+.card.bg-secondary {
+  background-color: var(--bg-surface-2) !important;
+  border: 1px solid var(--border-soft);
+}
+
+/* HEADER MONITORING CARD */
+.card.bg-secondary .card-header {
+  background-color: var(--green-soft) !important;
+  border-bottom: none;
+}
+
+/* JUDUL (Latitude, Longitude, dll) */
+.card.bg-secondary .card-header,
+.card.bg-secondary .card-header span {
+  color: var(--text-main) !important;
+  font-weight: 600;
+}
+
+/* VALUE */
+.card.bg-secondary h4 {
+  color: var(--text-main) !important;
+}
+
+/* =================================================
+   GREEN OVERRIDE (ARGON DEFAULT)
+================================================= */
+.bg-success {
+  background-color: var(--green-soft) !important;
+  color: var(--text-main) !important;
+}
+
+.text-success {
+  color: var(--green-main) !important;
+}
+
+.btn-success {
+  background-color: var(--green-soft) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--green-main);
+}
+
+.btn-success:hover {
+  background-color: var(--green-main) !important;
+  color: #000 !important;
 }

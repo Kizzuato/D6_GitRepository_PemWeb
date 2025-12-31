@@ -1,17 +1,18 @@
-<?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Users extends Model
+class Report extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'name',
-        'username',
-        'email',
-        'password',
+        'title',
+        'description',
+        'image_path',
+        'latitude',
+        'longitude',
+        'user_id',
     ];
 }

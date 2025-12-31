@@ -31,4 +31,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'raspi' => [
+        'host' => env('RASPI_HOST'),
+        'port' => env('RASPI_PORT'),
+        // 'user' => env('RASPI_USER'),
+        // 'pass' => env('RASPI_PASS'),
+    ],
+
 ];
