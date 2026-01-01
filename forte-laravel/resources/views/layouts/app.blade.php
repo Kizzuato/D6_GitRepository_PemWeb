@@ -17,12 +17,16 @@
     <!-- Argon Dashboard CSS -->
     <link id="pagestyle" href="{{ asset('../assets/css/argon-dashboard.css?v=2.0.4') }}" rel="stylesheet" />
     <link href="{{ asset('../assets/css/custom.css') }}" rel="stylesheet" />
+
     @stack('styles')
-
-
 </head>
 
 <body class="g-sidenav-show bg-dark text-white dark-version">
+
+    <!-- FORM LOGOUT (HIDDEN) -->
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+        @csrf
+    </form>
 
     <!-- Sidebar -->
     @include('layouts.sidebar')
@@ -31,15 +35,16 @@
         <!-- Navbar -->
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
             data-scroll="false">
+
             <div class="container-fluid py-1 px-3">
 
-                <!-- LEFT: Breadcrumb + Title -->
+                <!-- LEFT -->
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0">
                         <li class="breadcrumb-item text-sm">
                             <a class="opacity-5 text-white" href="javascript:;">Pages</a>
                         </li>
-                        <li class="breadcrumb-item text-sm text-white active" aria-current="page">
+                        <li class="breadcrumb-item text-sm text-white active">
                             @yield('title', 'Dashboard')
                         </li>
                     </ol>
@@ -48,19 +53,18 @@
                     </h6>
                 </nav>
 
-                <!-- RIGHT: Profile -->
-                <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 justify-content-end">
-                    <ul class="navbar-nav justify-content-end">
+                <!-- RIGHT -->
+                <div class="collapse navbar-collapse justify-content-end">
+                    <ul class="navbar-nav">
 
                         <li class="nav-item dropdown d-flex align-items-center">
                             <a href="javascript:;" class="nav-link text-white font-weight-bold px-0"
-                                id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                data-bs-toggle="dropdown">
                                 <i class="fa fa-user me-sm-1"></i>
                                 <span class="d-sm-inline d-none">Profile</span>
                             </a>
 
-                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4"
-                                aria-labelledby="dropdownMenuButton">
+                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3">
                                 <li>
                                     <a class="dropdown-item border-radius-md" href="#">
                                         <i class="fa fa-user me-2"></i> My Profile
@@ -75,7 +79,8 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>
-                                    <a class="dropdown-item border-radius-md text-danger" href="#">
+                                    <a class="dropdown-item border-radius-md text-danger" href="javascript:void(0)"
+                                        onclick="confirmLogout()">
                                         <i class="fa fa-sign-out-alt me-2"></i> Logout
                                     </a>
                                 </li>
@@ -84,7 +89,6 @@
 
                     </ul>
                 </div>
-
             </div>
         </nav>
 
@@ -100,9 +104,28 @@
     <script src="{{ asset('../assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
     <script src="{{ asset('../assets/js/argon-dashboard.min.js?v=2.0.4') }}"></script>
 
-    <div class="fixed-plugin d-none"></div>
-
     @stack('scripts')
+
+    <!-- SWEETALERT LOGOUT -->
+    <script>
+        window.confirmLogout = function() {
+            Swal.fire({
+                title: 'Yakin ingin logout?',
+                text: 'Kamu akan keluar dari sesi login.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
+    </script>
+
 
 </body>
 

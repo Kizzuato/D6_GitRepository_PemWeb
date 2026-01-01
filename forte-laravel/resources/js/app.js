@@ -11,3 +11,20 @@
 //     iconUrl: icon,
 //     shadowUrl: iconShadow,
 // });
+import Swal from 'sweetalert2';
+window.Swal = Swal;
+
+window.confirmLogout = function () {
+    Swal.fire({
+        title: 'Logout?',
+        text: 'Kamu akan keluar dari akun',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, logout',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('logout-form').submit();
+        }
+    });
+};

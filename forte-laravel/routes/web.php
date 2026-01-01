@@ -28,13 +28,10 @@ Route::get('/about', function () {
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
 
-Route::get('/register', function () {
-    return view('login.form_register');
-})->name('register');
+Route::get('/register', [LoginController::class, 'showRegister'])->name('register');
+Route::post('/register', [LoginController::class, 'register'])->name('register.process');
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-Route::post('/register', [LoginController::class, 'register'])
-    ->name('register.process');
 
 /*
 |--------------------------------------------------------------------------
@@ -100,5 +97,5 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
 
     // CRUD User (khusus admin)
-    Route::resource('/users', UserController::class);
+    // Route::resource('/users', UserController::class);
 });
