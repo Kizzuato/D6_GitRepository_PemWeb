@@ -7,6 +7,9 @@ use App\Http\Controllers\SensorController;
 use App\Http\Controllers\LogTableController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminReportController;
+use App\Http\Controllers\AdminController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +96,13 @@ Route::middleware('auth')->group(function () {
 | ADMIN ONLY ROUTES
 |--------------------------------------------------------------------------
 */
+// Route::middleware(['auth', 'role:admin,superadmin'])->group(function() {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::resource('users', UserController::class);
+    Route::resource('sensors', SensorController::class);
+    Route::resource('reports', AdminReportController::class);
+// });
+
 
 Route::middleware(['auth', 'admin'])->group(function () {
 
