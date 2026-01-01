@@ -64,8 +64,9 @@
                                 <span class="d-sm-inline d-none">Profile</span>
                             </a>
 
-                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3">
-                                <li>
+                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4"
+                                aria-labelledby="dropdownMenuButton">
+                                {{-- <li>
                                     <a class="dropdown-item border-radius-md" href="#">
                                         <i class="fa fa-user me-2"></i> My Profile
                                     </a>
@@ -74,10 +75,10 @@
                                     <a class="dropdown-item border-radius-md" href="#">
                                         <i class="fa fa-cog me-2"></i> Settings
                                     </a>
-                                </li>
-                                <li>
+                                </li> --}}
+                                {{-- <li>
                                     <hr class="dropdown-divider">
-                                </li>
+                                </li> --}}
                                 <li>
                                     <a class="dropdown-item border-radius-md text-danger" href="javascript:void(0)"
                                         onclick="confirmLogout()">
