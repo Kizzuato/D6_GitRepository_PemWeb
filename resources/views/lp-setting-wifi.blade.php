@@ -201,22 +201,36 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-forte">
+    <nav class="navbar navbar-expand-lg navbar-forte navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="awal">
+            <a class="navbar-brand" href="/">
                 <img src="{{ asset('assets/img/FORTE.png') }}" alt="FORTE Logo">
             </a>
-            <div class="collapse navbar-collapse justify-content-end">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-center">
                     <li class="nav-item"><a class="nav-link" href="dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="setting">Setting</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about">Abouth Rover</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="setting">Setting</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about">About Rover</a></li>
 
-
+                    <li class="nav-item d-lg-none w-100">
+                        <div class="profile-pill">
+                            <div class="avatar-circle">AH</div>
+                            <div class="ms-2 me-3">
+                                <div class="user-name">Akhsan Hakiki</div>
+                            </div>
+                            <i class="bi bi-three-dots-vertical options-dots"></i>
+                        </div>
                     </li>
                 </ul>
             </div>
-            <div class="d-none d-lg-flex align-items-center">
+
+            <div class="d-none d-lg-flex align-items-center ms-3">
                 <div class="profile-pill">
                     <div class="avatar-circle">AH</div>
                     <div class="ms-2 me-3">

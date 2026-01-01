@@ -25,6 +25,9 @@
         .navbar-forte {
             padding: 20px 50px;
             z-index: 10;
+            background-color: transparent;
+            /* Atau beri warna jika ingin solid */
+            transition: 0.3s;
         }
 
         .navbar-brand img {
@@ -46,15 +49,13 @@
             font-weight: 500;
         }
 
-        /* Profile Pill di Navbar Kanan */
+        /* Profile Pill di Navbar Kanan (Desktop) */
         .profile-pill {
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 5px 10px;
             border-radius: 30px;
-            /* Opsional: background tipis jika diinginkan */
-            /* background: rgba(255, 255, 255, 0.05); */
         }
 
         .avatar-circle {
@@ -156,41 +157,70 @@
             font-weight: 300;
         }
 
-        /* Warna Icon Khusus */
-        .icon-wifi {
-            color: #2d7a32;
-        }
+        /* --- Responsive Styles --- */
+        @media (max-width: 991px) {
+            .navbar-forte {
+                padding: 15px 20px;
+                background-color: #1a1a1a;
+                /* Solid background di mobile agar menu terbaca */
+            }
 
-        /* Hijau */
-        .icon-white {
-            color: white;
-        }
+            /* Agar menu turun ke bawah tidak mepet */
+            .navbar-collapse {
+                background-color: #1a1a1a;
+                padding: 10px 0;
+                border-radius: 0 0 15px 15px;
+            }
 
-        /* Icon Controller Outline Style */
-        .bi-controller::before {
-            /* Bootstrap icon default sudah solid/outline tergantung versi,
-               tapi kita pastikan ukurannya pas */
+            .nav-link {
+                margin: 5px 0;
+                padding-left: 0;
+            }
+
+            /* Profil di mobile menu */
+            .mobile-profile {
+                border-top: 1px solid #333;
+                margin-top: 10px;
+                padding-top: 15px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-forte">
+    <nav class="navbar navbar-expand-lg navbar-forte navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="awal">
+            <a class="navbar-brand" href="/">
                 <img src="{{ asset('assets/img/FORTE.png') }}" alt="FORTE Logo">
             </a>
-            <div class="collapse navbar-collapse justify-content-end">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-center">
                     <li class="nav-item"><a class="nav-link" href="dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="setting">Setting</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about">Abouth Rover</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="setting">Setting</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about">About Rover</a></li>
 
-
+                    <li class="nav-item d-lg-none w-100">
+                        <div class="profile-pill">
+                            <div class="avatar-circle">AH</div>
+                            <div class="ms-2 me-3">
+                                <div class="user-name">Akhsan Hakiki</div>
+                            </div>
+                            <i class="bi bi-three-dots-vertical options-dots"></i>
+                        </div>
                     </li>
                 </ul>
             </div>
-            <div class="d-none d-lg-flex align-items-center">
+
+            <div class="d-none d-lg-flex align-items-center ms-3">
                 <div class="profile-pill">
                     <div class="avatar-circle">AH</div>
                     <div class="ms-2 me-3">
@@ -202,15 +232,12 @@
         </div>
     </nav>
 
-
-
     <div class="setting-container">
         <div class="bg-lines"></div>
 
         <div class="row g-4 justify-content-center w-100">
 
             <div class="col-auto">
-
                 <a href="wifi" class="card-setting">
                     <svg width="129" height="98" viewBox="0 0 129 98" fill="none"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -251,7 +278,6 @@
                     <div class="card-subtitle-text">Logitec G29</div>
                 </a>
             </div>
-
             <div class="col-auto">
                 <a href="#" class="card-setting">
                     <svg width="139" height="139" viewBox="0 0 139 139" fill="none"
@@ -272,7 +298,6 @@
                     <div class="card-subtitle-text">Akhsan Hakiki</div>
                 </a>
             </div>
-
         </div>
     </div>
 
