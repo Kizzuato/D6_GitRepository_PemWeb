@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::view('/controller', 'lp-setting-controller')->name('controller');
 
     // REPORT (laporan)
-    Route::post('/report', [ReportController::class, 'store'])->name('report.store');
+    // Route::post('/report', [ReportController::class, 'store'])->name('report.store');
 });
 
 /*
@@ -72,5 +72,7 @@ Route::middleware(['auth', 'role:admin|superadmin'])->group(function () {
     // CRUD Resources
     Route::resource('admin/users', UserController::class);
     Route::resource('admin/sensors', SensorController::class);
-    Route::resource('admin/reports', AdminReportController::class);
+    Route::resource('admin/reports', ReportController::class);
+    Route::post('/reports/{id}/approve', [ReportController::class, 'approve'])->name('reports.approve');
+    Route::post('/reports/{id}/reject', [ReportController::class, 'reject'])->name('reports.reject');
 });

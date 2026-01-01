@@ -14,9 +14,9 @@ class LoginController extends Controller
     // =====================
     public function index()
     {
-        if (Auth::check()) {
-            return redirect()->route('dashboard');
-        }
+        // if (Auth::check()) {
+        //     return redirect()->route('dashboard');
+        // }
 
         return view('login.form_login');
     }
@@ -40,20 +40,30 @@ class LoginController extends Controller
             'password'  => $request->password
         ])) {
             $request->session()->regenerate();
+
+            $user = Auth::user();
+
+            // cek role user
+            if ($user->hasRole('superadmin|admin')) {
+                return redirect()->route('admin.dashboard'); // route admin
+            }
+
+            // user biasa
             return redirect()->route('setting');
         }
 
         return back()->with('error', 'Username atau password salah');
     }
 
+
     // =====================
     // SHOW REGISTER
     // =====================
     public function showRegister()
     {
-        if (Auth::check()) {
-            return redirect()->route('dashboard');
-        }
+        // if (Auth::check()) {
+        //     return redirect()->route('dashboard');
+        // }
 
         return view('login.form_register');
     }

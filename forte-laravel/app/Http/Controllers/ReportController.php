@@ -3,32 +3,46 @@
 namespace App\Http\Controllers;
 
 use App\Models\Report;
+use App\Models\Validation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
-    public function store(Request $request)
+    public function index()
     {
-        $request->validate([
-            'title' => 'required',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+        $reports = Report::all();
+        return view('admin.reports', compact('reports'));
+    }
+    public function approve(Request $request, $id)
+    {
+        $report = Report::findOrFail($id);
 
-        $imagePath = null;
+        DB::transaction(function () use ($report) {
+            // 1. Update status di tabel reports
+            $report->update(['status' => 'approved']);
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('reports', 'public');
-        }
+            // 2. Simpan data ke tabel validations (Relasi hasOne)
+            $report->validation()->create([
+                'user_id' => auth()->id(), // Admin yang approve
+                'validated_at' => now(),
+                'notes' => 'Validasi otomatis oleh sistem'
+            ]);
 
-        Report::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'image_path' => $imagePath,
-            'latitude' => -7.1203,
-            'longitude' => 110.4210,
-            'user_id' => auth()->id(),
-        ]);
+            // 3. OTOMATIS: Generate Classification (Relasi belongsToMany)
+            // Contoh: kita assign classification ID 1 (misal: "Verified") secara otomatis
+            // Cek dulu apakah ID 1 ada di table classifications
+            $report->classifications()->syncWithoutDetaching([1]);
+        });
 
-        return redirect()->back()->with('success', 'Laporan berhasil disimpan');
+        return back()->with('success', 'Report Approved & Classification Linked!');
+    }
+
+    public function reject($id)
+    {
+        $report = Report::findOrFail($id);
+        $report->update(['status' => 'rejected']);
+
+        return back()->with('error', 'Report Rejected!');
     }
 }
