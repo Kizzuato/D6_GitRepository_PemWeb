@@ -10,7 +10,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminController;
 
-
 /*
 |--------------------------------------------------------------------------
 | PUBLIC ROUTES (tanpa login)
@@ -18,14 +17,8 @@ use App\Http\Controllers\AdminController;
 */
 
 // Landing page
-Route::get('/', function () {
-    return view('lp-awal');
-})->name('home');
-
-// About
-Route::get('/about', function () {
-    return view('lp-about');
-})->name('about');
+Route::view('/', 'lp-awal')->name('home');
+Route::view('/about', 'lp-about')->name('about');
 
 // Login & Register
 Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -41,71 +34,43 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 | AUTHENTICATED USER ROUTES
 |--------------------------------------------------------------------------
 */
-
 Route::middleware('auth')->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Fetch realtime / camera
-    Route::get('/fetch-data', [DashboardController::class, 'fetchData'])
-        ->name('fetch.data');
+    Route::get('/fetch-data', [DashboardController::class, 'fetchData'])->name('fetch.data');
+    Route::get('/camera/status', [DashboardController::class, 'cameraStatus'])->name('camera.status');
 
-    Route::get('/camera/status', [DashboardController::class, 'cameraStatus'])
-        ->name('camera.status');
-
-    // Sensor dashboard (kalau masih dipakai)
-    Route::get('/sensor/dashboard', [SensorController::class, 'dashboard'])
-        ->name('sensor.dashboard');
+    // Sensor dashboard
+    Route::get('/sensor/dashboard', [SensorController::class, 'dashboard'])->name('sensor.dashboard');
 
     // Map & Table
-    Route::get('/map', function () {
-        return view('map');
-    })->name('map');
+    Route::view('/map', 'map')->name('map');
+    Route::get('/table-data', [LogTableController::class, 'index'])->name('table-data');
 
-    Route::get('/table-data', [LogTableController::class, 'index'])
-        ->name('table-data');
+    // Settings pages
+    Route::view('/setting', 'lp-setting')->name('setting');
+    Route::view('/wifi', 'lp-setting-wifi')->name('wifi');
+    Route::view('/controller', 'lp-setting-controller')->name('controller');
 
-    // Settings
-    Route::get('/setting', function () {
-        return view('lp-setting');
-    })->name('setting');
-
-    Route::get('/wifi', function () {
-        return view('lp-setting-wifi');
-    })->name('wifi');
-
-    Route::get('/controller', function () {
-        return view('lp-setting-controller');
-    })->name('controller');
-
-    /*
-    |--------------------------------------------------------------------------
-    | REPORT (LAPORAN)
-    |--------------------------------------------------------------------------
-    */
-
-    // Simpan laporan (gambar + title + desc + lat long dummy)
-    Route::post('/report', [ReportController::class, 'store'])
-        ->name('report.store');
+    // REPORT (laporan)
+    Route::post('/report', [ReportController::class, 'store'])->name('report.store');
 });
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN ONLY ROUTES
+| ADMIN ONLY ROUTES (spatie role: admin|superadmin)
 |--------------------------------------------------------------------------
 */
-// Route::middleware(['auth', 'role:admin,superadmin'])->group(function() {
+Route::middleware(['auth', 'role:admin|superadmin'])->group(function () {
+
+    // Admin Dashboard
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+
+    // CRUD Resources
     Route::resource('users', UserController::class);
     Route::resource('sensors', SensorController::class);
     Route::resource('reports', AdminReportController::class);
-// });
-
-
-Route::middleware(['auth', 'admin'])->group(function () {
-
-    // CRUD User (khusus admin)
-    // Route::resource('/users', UserController::class);
 });
