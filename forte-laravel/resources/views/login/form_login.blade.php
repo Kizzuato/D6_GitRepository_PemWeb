@@ -81,9 +81,9 @@
 
                 <button type="submit" class="btn btn-login">Login</button>
 
-                <p class="signup-text mt-3">
+                {{-- <p class="signup-text mt-3">
                     Belum punya akun <a href="{{ route('register') }}">(Daftar)</a>
-                </p>
+                </p> --}}
             </form>
         </div>
 

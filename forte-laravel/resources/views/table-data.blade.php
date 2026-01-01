@@ -59,7 +59,7 @@
                                     <th class="text-uppercase text-xxs font-weight-bolder text-white text-center">Lintang
                                     </th>
                                     <th class="text-uppercase text-xxs font-weight-bolder text-white text-center">Bujur</th>
-                                    <th class="text-uppercase text-xxs font-weight-bolder text-white text-center">Zona</th>
+                                    <th class="text-uppercase text-xxs font-weight-bolder text-white text-center">Klasifikasi</th>
                                     <th class="text-uppercase text-xxs font-weight-bolder text-white text-center">Anomali
                                     </th>
                                     <th class="text-uppercase text-xxs font-weight-bolder text-white text-center">Desc</th>
@@ -67,76 +67,34 @@
                             </thead>
 
                             <tbody class="border-0">
-                                {{-- Baris 1: Hijau Tua --}}
-                                <tr style="background-color: #14451a; border: none;">
-                                    <td class="text-center text-sm py-3 text-white ps-4">Node_A01</td>
-                                    <td class="text-center text-sm text-white">-7.1203</td>
-                                    <td class="text-center text-sm text-white">110.4210</td>
-                                    <td class="text-center text-sm text-white">Zona A</td>
-                                    <td class="text-center text-sm text-white">pohon tumbang</td>
-                                    <td class="text-center text-sm text-white px-2">terdapat pohon tumbang pada...</td>
-                                </tr>
-
-                                {{-- Baris 2: Hitam --}}
-                                <tr style="background-color: #1a1a1a; border: none;">
-                                    <td class="text-center text-sm py-3 text-white ps-4">Node_A02</td>
-                                    <td class="text-center text-sm text-white">-7.1208</td>
-                                    <td class="text-center text-sm text-white">110.4223</td>
-                                    <td class="text-center text-sm text-white">Zona B</td>
-                                    <td class="text-center text-sm text-white">padi rusak</td>
-                                    <td class="text-center text-sm text-white px-2">terdapat padi rusak pada.......</td>
-                                </tr>
-
-                                {{-- Baris 3: Hijau Tua --}}
-                                <tr style="background-color: #14451a; border: none;">
-                                    <td class="text-center text-sm py-3 text-white ps-4">Node_A03</td>
-                                    <td class="text-center text-sm text-white">-7.1212</td>
-                                    <td class="text-center text-sm text-white">110.4236</td>
-                                    <td class="text-center text-sm text-white">Zona C</td>
-                                    <td class="text-center text-sm text-white">buah berlubang</td>
-                                    <td class="text-center text-sm text-white px-2">buah nampak berlubang.....</td>
-                                </tr>
-
-                                {{-- Baris 4: Hitam --}}
-                                <tr style="background-color: #1a1a1a; border: none;">
-                                    <td class="text-center text-sm py-3 text-white ps-4">2025-11-05</td>
-                                    <td class="text-center text-sm text-white">-7.1217</td>
-                                    <td class="text-center text-sm text-white">110.4228</td>
-                                    <td class="text-center text-sm text-white">Zona D</td>
-                                    <td class="text-center text-sm text-white">Jagung busuk</td>
-                                    <td class="text-center text-sm text-white px-2">jagung nampak membusuk....</td>
-                                </tr>
-
-                                {{-- Baris 5: Hijau Tua --}}
-                                <tr style="background-color: #14451a; border: none;">
-                                    <td class="text-center text-sm py-3 text-white ps-4">2025-11-06</td>
-                                    <td class="text-center text-sm text-white">-7.1222</td>
-                                    <td class="text-center text-sm text-white">110.4259</td>
-                                    <td class="text-center text-sm text-white">Zona E</td>
-                                    <td class="text-center text-sm text-white">pohon tumbang</td>
-                                    <td class="text-center text-sm text-white px-2">ada penghalang jalan pohon yang tumbang
-                                        di.....</td>
-                                </tr>
+                                @forelse ($reports as $index => $report)
+                                    <tr
+                                        style="background-color: {{ $index % 2 == 0 ? '#14451a' : '#1a1a1a' }}; border: none;">
+                                        <td class="text-center text-sm py-3 text-white ps-4">{{ $report->id }}</td>
+                                        <td class="text-center text-sm text-white">{{ $report->latitude }}</td>
+                                        <td class="text-center text-sm text-white">{{ $report->longitude }}</td>
+                                        <td class="text-center text-sm text-white">
+                                            {{-- Misal ambil classification pertama --}}
+                                            {{ $report->classifications->first()?->name ?? '-' }}
+                                        </td>
+                                        <td class="text-center text-sm text-white">{{ $report->title }}</td>
+                                        <td class="text-center text-sm text-white px-2">
+                                            {{ Str::limit($report->description, 50) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center text-white py-4">Belum ada laporan tersedia
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
+
                         </table>
                     </div>
 
                     {{-- Pagination --}}
-                    <div class="d-flex justify-content-center mt-4 pb-3 align-items-center gap-3">
-                        <span class="text-xs text-white-50" style="cursor: pointer;">Previous</span>
-                        <nav>
-                            <ul class="pagination pagination-sm mb-0">
-                                <li class="page-item active">
-                                    <a class="page-link border-1 border-success bg-transparent"
-                                        style="border-radius: 8px; color: #4caf50;">1</a>
-                                </li>
-                                <li class="page-item ms-2"><a class="page-link bg-transparent border-0 text-white">2</a>
-                                </li>
-                                <li class="page-item ms-2"><a class="page-link bg-transparent border-0 text-white">3</a>
-                                </li>
-                            </ul>
-                        </nav>
-                        <span class="text-xs text-white-50" style="cursor: pointer;">Next</span>
+                    <div class="d-flex justify-content-center mt-4 pb-3">
+                        {{ $reports->links('pagination::bootstrap-5') }}
                     </div>
 
                 </div>

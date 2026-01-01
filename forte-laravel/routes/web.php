@@ -56,7 +56,8 @@ Route::middleware('auth')->group(function () {
     Route::view('/controller', 'lp-setting-controller')->name('controller');
 
     // REPORT (laporan)
-    // Route::post('/report', [ReportController::class, 'store'])->name('report.store');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('/report', [ReportController::class, 'store'])->name('report.store');
 });
 
 /*
