@@ -40,7 +40,7 @@ class LoginController extends Controller
             'password'  => $request->password
         ])) {
             $request->session()->regenerate();
-            return redirect()->route('dashboard');
+            return redirect()->route('setting');
         }
 
         return back()->with('error', 'Username atau password salah');
