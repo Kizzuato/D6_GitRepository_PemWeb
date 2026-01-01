@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Table Data')
+
 @section('content')
     {{-- Log Table --}}
     <div class="row mt-4">

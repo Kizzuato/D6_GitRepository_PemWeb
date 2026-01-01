@@ -63,7 +63,7 @@
             <div class="card-body">
                 <div class="row g-3">
                     {{-- Latitude --}}
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-6">
                         <div class="card bg-secondary h-100">
                             <div class="card-header bg-success text-white py-2 d-flex align-items-center">
                                 <i class="ni ni-pin-3 me-2"></i>
@@ -75,7 +75,7 @@
                         </div>
                     </div>
                     {{-- Longitude --}}
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-6">
                         <div class="card bg-secondary h-100">
                             <div class="card-header bg-success text-white py-2 d-flex align-items-center">
                                 <i class="ni ni-pin-3 me-2"></i>
@@ -87,7 +87,7 @@
                         </div>
                     </div>
                     {{-- Daya --}}
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-6">
                         <div class="card bg-secondary h-100">
                             <div class="card-header bg-success text-white py-2 d-flex align-items-center">
                                 <i class="ni ni-bolt me-2"></i>
@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     {{-- Accelerometer X --}}
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-6">
                         <div class="card bg-secondary h-100">
                             <div class="card-header bg-success text-white py-2">
                                 Accelerometer X
@@ -110,7 +110,7 @@
                         </div>
                     </div>
                     {{-- Accelerometer Y --}}
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-6">
                         <div class="card bg-secondary h-100">
                             <div class="card-header bg-success text-white py-2">
                                 Accelerometer Y
@@ -121,7 +121,7 @@
                         </div>
                     </div>
                     {{-- Accelerometer Z --}}
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-6">
                         <div class="card bg-secondary h-100">
                             <div class="card-header bg-success text-white py-2">
                                 Accelerometer Z

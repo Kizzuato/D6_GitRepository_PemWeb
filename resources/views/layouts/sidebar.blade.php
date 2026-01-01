@@ -24,7 +24,7 @@
                         class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="bi bi-map text-white fs-4 text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1 text-white">Peta</span>
+                    <span class="nav-link-text ms-1 text-white">Map</span>
                 </a>
             </li>
 

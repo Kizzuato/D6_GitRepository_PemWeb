@@ -191,7 +191,7 @@
                     </label>
                 </div>
 
-                <button type="submit" class="btn btn-login">Login</button>
+                <button class="btn btn-login">Login</button>
 
                 <p class="signup-text">
                     Belum punya akun <a href="{{ route('register') }}">(Daftar)</a>
