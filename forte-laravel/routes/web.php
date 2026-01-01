@@ -70,7 +70,7 @@ Route::middleware(['auth', 'role:admin|superadmin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
 
     // CRUD Resources
-    Route::resource('users', UserController::class);
-    Route::resource('sensors', SensorController::class);
-    Route::resource('reports', AdminReportController::class);
+    Route::resource('admin/users', UserController::class);
+    Route::resource('admin/sensors', SensorController::class);
+    Route::resource('admin/reports', AdminReportController::class);
 });
