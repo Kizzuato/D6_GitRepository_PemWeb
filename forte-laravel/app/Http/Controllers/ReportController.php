@@ -24,7 +24,7 @@ class ReportController extends Controller
 
             // 2. Simpan data ke tabel validations (Relasi hasOne)
             $report->validation()->create([
-                'user_id' => auth()->id(), // Admin yang approve
+                'admin_id' => auth()->id(), // Admin yang approve
                 'validated_at' => now(),
                 'notes' => 'Validasi otomatis oleh sistem'
             ]);

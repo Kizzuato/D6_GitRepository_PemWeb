@@ -12,6 +12,8 @@
                     <thead>
                         <tr>
                             <th class="text-white ps-4">Judul</th>
+                            <th class="text-white">Latitude</th>
+                            <th class="text-white">Longitude</th>
                             <th class="text-white">Lokasi (Lat, Long)</th>
                             <th class="text-white">Bukti</th>
                             <th class="text-white text-center">Status</th>
@@ -23,6 +25,12 @@
                         <tr style="background-color: {{ $loop->iteration % 2 == 0 ? '#1a1a1a' : '#14451a' }};">
                             <td class="ps-4">
                                 <span class="text-sm font-weight-bold">{{ $r->title }}</span>
+                            </td>
+                            <td>
+                                <span class="text-xs">{{ $r->latitude }}</span>
+                            </td>
+                            <td>
+                                <span class="text-xs">{{ $r->longitude }}</span>
                             </td>
                             <td>
                                 <span class="text-xs">{{ $r->latitude }}, {{ $r->longitude }}</span>
@@ -45,7 +53,7 @@
                                     <form action="{{ route('reports.approve', $r->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-link text-success p-0 me-2">
-                                            <i class="fas fa-check-circle" style="font-size: 1.2rem;"></i>
+                                            <i class="bi bi-check-circle" style="font-size: 1.2rem;"></i>
                                         </button>
                                     </form>
 
@@ -53,7 +61,7 @@
                                     <form action="{{ route('reports.reject', $r->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-link text-danger p-0">
-                                            <i class="fas fa-times-circle" style="font-size: 1.2rem;"></i>
+                                            <i class="bi bi-x-circle" style="font-size: 1.2rem;"></i>
                                         </button>
                                     </form>
                                 @else

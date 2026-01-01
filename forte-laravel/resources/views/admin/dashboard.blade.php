@@ -68,7 +68,7 @@
                             @foreach(App\Models\User::all() as $user)
                                 <tr class="hover:bg-green-800">
                                     <td>{{ $user->id }}</td>
-                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->username }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->role->name ?? '-' }}</td>
                                 </tr>
@@ -99,7 +99,7 @@
                             @foreach(App\Models\Report::latest()->take(5)->get() as $report)
                                 <tr class="hover:bg-green-800">
                                     <td>{{ $report->id }}</td>
-                                    <td>{{ $report->user->name }}</td>
+                                    <td>{{ $report->user->username }}</td>
                                     <td>{{ ucfirst($report->status) }}</td>
                                     <td>
                                         @if($report->status == 'pending')
