@@ -12,6 +12,7 @@
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
 
+            @hasanyrole('user')
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                     href="{{ route('dashboard') }}">
@@ -42,32 +43,50 @@
                     <span class="nav-link-text ms-1 text-white">Tables</span>
                 </a>
             </li>
+            @endhasanyrole
 
-
-
-            {{-- <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Other Pages</h6>
-            </li>
-
+            {{-- Menu dari kode pertama, hanya untuk admin & superadmin --}}
+            @hasanyrole('admin|superadmin')
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('setting') ? 'active' : '' }}" href="/setting">
+                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                    href="{{ route('admin.dashboard') }}">
                     <div
                         class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-settings-gear-65 text-white fs-4 text-sm opacity-10"></i>
+                        <i class="ni ni-tv-2 text-white fs-4 text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1 text-white">Setting</span>
+                    <span class="nav-link-text ms-1 text-white">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin.users') ? 'active' : '' }}" href="/admin/users">
+                    <div
+                        class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-02 text-success fs-4 text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1 text-white">Manage Users</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('about') ? 'active' : '' }}" href="/about">
+                <a class="nav-link {{ request()->is('admin.sensors') ? 'active' : '' }}" href="/admin/sensors">
                     <div
                         class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-spaceship text-white fs-4 text-sm opacity-10"></i>
+                        <i class="ni ni-tv-2 text-white fs-4 text-sm opacity-10"></i>
                     </div>
-                    <span class="nav-link-text ms-1 text-white">About Rover</span>
+                    <span class="nav-link-text ms-1 text-white">Manage Sensors</span>
                 </a>
-            </li> --}}
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin.reports') ? 'active' : '' }}" href="/admin/reports">
+                    <div
+                        class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-bullet-list-67 text-white fs-4 text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1 text-white">Validation Reports</span>
+                </a>
+            </li>
+            @endhasanyrole
 
         </ul>
     </div>
