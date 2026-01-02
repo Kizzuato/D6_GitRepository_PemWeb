@@ -3,46 +3,94 @@
 namespace App\Http\Controllers;
 
 use App\Models\Report;
-use App\Models\Validation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
 {
+    // -------------------
+    // USER METHODS
+    // -------------------
     public function index()
     {
-        $reports = Report::all();
+        if (Auth::user()->hasRole('admin|superadmin')) {
+            abort(403); // admin jangan akses route user
+        }
+
+        $reports = Report::where('user_id', Auth::id())->latest()->get();
+        return view('user.reports.index', compact('reports'));
+    }
+
+    public function store(Request $request)
+    {
+        if (Auth::user()->hasRole('admin|superadmin')) {
+            abort(403); // admin jangan akses route user
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|string',
+        ]);
+
+        $imagePath = null;
+        if ($request->image) {
+            $imageData = preg_replace('#^data:image/\w+;base64,#i', '', $request->image);
+            $imageData = str_replace(' ', '+', $imageData);
+            $imageBinary = base64_decode($imageData);
+
+            $filename = 'reports/' . uniqid() . '.png';
+            Storage::disk('public')->put($filename, $imageBinary);
+
+            $imagePath = $filename;
+        }
+
+        $report = Report::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'image_path' => $imagePath,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'user_id' => Auth::id(),
+            'status' => 'pending',
+        ]);
+
+        return redirect()->back()->with('success', 'Laporan berhasil disimpan!');
+    }
+
+    // -------------------
+    // ADMIN METHODS
+    // -------------------
+    public function adminIndex()
+    {
+        if (!Auth::user()->hasRole('admin|superadmin')) {
+            abort(403); // user biasa nggak boleh akses admin
+        }
+
+        $reports = Report::latest()->get();
         return view('admin.reports', compact('reports'));
     }
-    public function approve(Request $request, $id)
+
+    public function approve($id)
     {
+        if (!Auth::user()->hasRole('admin|superadmin')) abort(403);
+
         $report = Report::findOrFail($id);
+        $report->status = 'approved';
+        $report->save();
 
-        DB::transaction(function () use ($report) {
-            // 1. Update status di tabel reports
-            $report->update(['status' => 'approved']);
-
-            // 2. Simpan data ke tabel validations (Relasi hasOne)
-            $report->validation()->create([
-                'admin_id' => auth()->id(), // Admin yang approve
-                'validated_at' => now(),
-                'notes' => 'Validasi otomatis oleh sistem'
-            ]);
-
-            // 3. OTOMATIS: Generate Classification (Relasi belongsToMany)
-            // Contoh: kita assign classification ID 1 (misal: "Verified") secara otomatis
-            // Cek dulu apakah ID 1 ada di table classifications
-            $report->classifications()->syncWithoutDetaching([1]);
-        });
-
-        return back()->with('success', 'Report Approved & Classification Linked!');
+        return redirect()->back()->with('success', 'Laporan disetujui!');
     }
 
     public function reject($id)
     {
-        $report = Report::findOrFail($id);
-        $report->update(['status' => 'rejected']);
+        if (!Auth::user()->hasRole('admin|superadmin')) abort(403);
 
-        return back()->with('error', 'Report Rejected!');
+        $report = Report::findOrFail($id);
+        $report->status = 'rejected';
+        $report->save();
+
+        return redirect()->back()->with('success', 'Laporan ditolak!');
     }
 }

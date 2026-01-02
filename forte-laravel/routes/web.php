@@ -57,7 +57,7 @@ Route::middleware('auth')->group(function () {
 
     // REPORT (laporan)
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::post('/report', [ReportController::class, 'store'])->name('report.store');
+    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
 });
 
 /*
@@ -71,9 +71,14 @@ Route::middleware(['auth', 'role:admin|superadmin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
 
     // CRUD Resources
-    Route::resource('admin/users', UserController::class);
     Route::resource('admin/sensors', SensorController::class);
-    Route::resource('admin/reports', ReportController::class);
-    Route::post('/reports/{id}/approve', [ReportController::class, 'approve'])->name('reports.approve');
-    Route::post('/reports/{id}/reject', [ReportController::class, 'reject'])->name('reports.reject');
+
+    Route::resource('admin/users', UserController::class);
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/export', [UserController::class, 'exportCsv'])->name('users.export');
+    Route::post('/users/import', [UserController::class, 'importCsv'])->name('users.import');
+
+    Route::get('admin/reports', [ReportController::class, 'adminIndex'])->name('reports.index');
+    Route::post('admin/reports/{id}/approve', [ReportController::class, 'approve'])->name('reports.approve');
+    Route::post('admin/reports/{id}/reject', [ReportController::class, 'reject'])->name('reports.reject');
 });
