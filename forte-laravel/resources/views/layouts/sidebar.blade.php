@@ -25,6 +25,17 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('power') ? 'active' : '' }}"
+                    href="{{ route('power') }}">
+                    <div
+                        class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-sound-wave text-white fs-4 text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1 text-white">Power Station</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link {{ request()->is('map') ? 'active' : '' }}" href="/map">
                     <div
                         class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">

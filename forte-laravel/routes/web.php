@@ -8,7 +8,11 @@ use App\Http\Controllers\LogTableController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminReportController;
+use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\AdminController;
+use PHPUnit\Framework\Constraint\Operator;
+use App\Http\Controllers\PowerController;
+use App\Http\Controllers\MQTTController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +42,8 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/power', [PowerController::class, 'index'])->name('power');
+    Route::get('/fetch-mqtt-data', [MQTTController::class, 'getLatestData'])->name('mqttfetch.data');
 
     // Fetch realtime / camera
     Route::get('/fetch-data', [DashboardController::class, 'fetchData'])->name('fetch.data');
