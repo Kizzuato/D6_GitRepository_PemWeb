@@ -38,33 +38,35 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 | AUTHENTICATED USER ROUTES
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
+// Route::middleware('auth')->group(function () {
 
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/power', [PowerController::class, 'index'])->name('power');
-    Route::get('/fetch-mqtt-data', [MQTTController::class, 'getLatestData'])->name('mqttfetch.data');
+// Dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/power', [PowerController::class, 'index'])->name('power');
+Route::get('/fetch-mqtt-data', [MQTTController::class, 'getLatestData'])->name('mqttfetch.data');
 
-    // Fetch realtime / camera
-    Route::get('/fetch-data', [DashboardController::class, 'fetchData'])->name('fetch.data');
-    Route::get('/camera/status', [DashboardController::class, 'cameraStatus'])->name('camera.status');
+// Fetch realtime / camera
+Route::get('/fetch-data', [DashboardController::class, 'fetchData'])->name('fetch.data');
+Route::get('/camera/status', [DashboardController::class, 'cameraStatus'])->name('camera.status');
 
-    // Sensor dashboard
-    Route::get('/sensor/dashboard', [SensorController::class, 'dashboard'])->name('sensor.dashboard');
+// Sensor dashboard
+Route::get('/sensor/dashboard', [SensorController::class, 'dashboard'])->name('sensor.dashboard');
 
-    // Map & Table
-    Route::view('/map', 'map')->name('map');
-    Route::get('/table-data', [LogTableController::class, 'index'])->name('table-data');
+// Map & Table
+Route::view('/map', 'map')->name('map');
+Route::get('/table-data', [LogTableController::class, 'index'])->name('table-data');
 
-    // Settings pages
-    Route::view('/setting', 'lp-setting')->name('setting');
-    Route::view('/wifi', 'lp-setting-wifi')->name('wifi');
-    Route::view('/controller', 'lp-setting-controller')->name('controller');
+// Settings pages
+Route::view('/setting', 'lp-setting')->name('setting');
+Route::view('/wifi', 'lp-setting-wifi')->name('wifi');
+Route::view('/controller', 'lp-setting-controller')->name('controller');
+Route::view('/profil', 'lp-setting-profile')->name('profil');
 
-    // REPORT (laporan)
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
-});
+
+// REPORT (laporan)
+Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+// });
 
 /*
 |--------------------------------------------------------------------------

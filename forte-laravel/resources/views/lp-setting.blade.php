@@ -279,7 +279,7 @@
                 </a>
             </div>
             <div class="col-auto">
-                <a href="#" class="card-setting">
+                <a href="profil" class="card-setting">
                     <svg width="139" height="139" viewBox="0 0 139 139" fill="none"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <rect width="139" height="139" fill="url(#pattern0_90_748)" />
