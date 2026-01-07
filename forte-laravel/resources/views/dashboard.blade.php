@@ -17,15 +17,15 @@
                         </h6>
 
                         <div class="card bg-secondary p-2 text-center">
-                            <img
-                                src="http://192.168.137.207:5000/video"
-                                class="img-fluid rounded"
-                                style="max-height:480px;"
-                                alt="Front Camera">
+                            <img id="frontCam" class="img-fluid rounded"
+                                src="{{ config('services.raspi.host')
+                                    ? 'http://' . config('services.raspi.host') . ':' . config('services.raspi.port') . '/video'
+                                    : '' }}"
+                                alt="Front Camera" />
 
-                            <small class="text-muted">
-                                Source: Raspberry Pi Flask Stream
-                            </small>
+                            <small class="text-muted">Live MJPEG Stream</small>
+
+                            <small id="frontStatus" class="text-muted"></small>
                         </div>
                     </div>
 
@@ -36,15 +36,15 @@
                         </h6>
 
                         <div class="card bg-secondary p-2 text-center">
-                            <img
-                                src="http://192.168.137.207:5000/video"
-                                class="img-fluid rounded"
-                                style="max-height:480px;"
-                                alt="Back Camera">
+                            <img id="backCam" class="img-fluid rounded"
+                                src="{{ config('services.raspi.host')
+                                    ? 'http://' . config('services.raspi.host') . ':' . config('services.raspi.port') . '/video'
+                                    : '' }}"
+                                alt="Front Camera" />
 
-                            <small class="text-muted">
-                                Source: Raspberry Pi Flask Stream
-                            </small>
+                            <small class="text-muted">Live MJPEG Stream</small>
+
+                            <small id="frontStatus" class="text-muted"></small>
                         </div>
                     </div>
 
@@ -79,12 +79,14 @@
                         <div class="mb-3">
                             <label class="form-label text-white">Gambar Snapshot Front Camera</label>
                             <div class="mb-2">
-                                <img id="snapshotPreview" class="img-fluid rounded d-none" alt="Snapshot Preview">
+                                <img id="snapshotPreview" class="d-none mt-2" width="100%">
+
                             </div>
                             <input type="hidden" name="image" id="snapshotInput">
-                            <button type="button" class="btn btn-info btn-sm" id="captureBtn">
-                                <i class="bi bi-camera me-1"></i> Ambil Snapshot
+                            <button type="button" id="captureBtn" class="btn btn-danger">
+                                📸 Snapshot
                             </button>
+
                         </div>
 
                         <button type="submit" class="btn btn-success float-end">Simpan Laporan</button>
@@ -247,13 +249,10 @@
         </div>
 
         <script>
-            let polling = null;
-
+            /* ===================== ELEMENT ===================== */
             const captureBtn = document.getElementById('captureBtn');
-            const snapshotInput = document.getElementById('snapshotInput');
             const snapshotPreview = document.getElementById('snapshotPreview');
-            const reportLat = document.getElementById('reportLat');
-            const reportLon = document.getElementById('reportLon');
+            const snapshotInput = document.getElementById('snapshotInput');
 
             const latitudeCard = document.getElementById('latitudeCard');
             const longitudeCard = document.getElementById('longitudeCard');
@@ -262,195 +261,67 @@
             const accYCard = document.getElementById('accYCard');
             const accZCard = document.getElementById('accZCard');
 
-            const frontVid = document.getElementById('frontVid');
-            const frontImg = document.getElementById('frontImg');
-            const backVid = document.getElementById('backVid');
-            const backImg = document.getElementById('backImg');
-            const frontStatus = document.getElementById('frontStatus');
-            const backStatus = document.getElementById('backStatus');
+            const reportLat = document.getElementById('reportLat');
+            const reportLon = document.getElementById('reportLon');
 
-            function getRandom(min, max, fixed = 2) {
+            /* ===================== SNAPSHOT ===================== */
+            captureBtn.addEventListener('click', () => {
+                const snapshotUrl =
+                    `http://{{ config('services.raspi.host') }}:{{ config('services.raspi.port') }}/snapshot?ts=${Date.now()}`;
+
+                snapshotPreview.src = snapshotUrl;
+                snapshotPreview.classList.remove('d-none');
+
+                // SIMPAN KE FORM
+                snapshotInput.value = snapshotUrl;
+            });
+
+            /* ===================== DUMMY DATA ===================== */
+            function rand(min, max, fixed = 2) {
                 return (Math.random() * (max - min) + min).toFixed(fixed);
             }
 
-            function updateRandomData() {
-                const lat = getRandom(-90, 90);
-                const lon = getRandom(-180, 180);
-                const daya = getRandom(0, 100, 0);
-                const accX = getRandom(-10, 10);
-                const accY = getRandom(-10, 10);
-                const accZ = getRandom(-10, 10);
+            function updateDummy() {
+                const lat = rand(-90, 90);
+                const lon = rand(-180, 180);
 
-                // update card
                 latitudeCard.innerText = lat;
                 longitudeCard.innerText = lon;
-                dayaCard.innerText = daya;
-                accXCard.innerText = accX;
-                accYCard.innerText = accY;
-                accZCard.innerText = accZ;
+                dayaCard.innerText = rand(0, 100, 0);
 
-                // update hidden form input supaya bisa disubmit
+                accXCard.innerText = rand(-10, 10);
+                accYCard.innerText = rand(-10, 10);
+                accZCard.innerText = rand(-10, 10);
+
                 reportLat.value = lat;
                 reportLon.value = lon;
 
-                // update RPM & Battery random
-                setRPM(Math.floor(getRandom(0, 100, 0)));
-                setBattery(Math.floor(getRandom(0, 100, 0)));
+                setRPM(Math.floor(rand(0, 100, 0)));
+                setBattery(Math.floor(rand(0, 100, 0)));
             }
 
-            // update setiap detik
-            setInterval(updateRandomData, 1000);
-            updateRandomData(); // panggil sekali saat load
+            setInterval(updateDummy, 1000);
+            updateDummy();
 
-            // Capture snapshot front camera
-            captureBtn.addEventListener('click', () => {
-                const canvas = document.createElement('canvas');
-
-                let videoEl = !frontVid.classList.contains('d-none') ? frontVid : null;
-                let imgEl = !frontImg.classList.contains('d-none') ? frontImg : null;
-
-                if (videoEl) {
-                    canvas.width = videoEl.videoWidth;
-                    canvas.height = videoEl.videoHeight;
-                    canvas.getContext('2d').drawImage(videoEl, 0, 0);
-                } else if (imgEl) {
-                    canvas.width = imgEl.naturalWidth;
-                    canvas.height = imgEl.naturalHeight;
-                    canvas.getContext('2d').drawImage(imgEl, 0, 0);
-                } else {
-                    alert('Front camera tidak aktif!');
-                    return;
-                }
-
-                const dataUrl = canvas.toDataURL('image/png');
-                snapshotInput.value = dataUrl;
-                snapshotPreview.src = dataUrl;
-                snapshotPreview.classList.remove('d-none');
-            });
-
-            // Fetch data dari backend (jika ada)
-            function fetchData() {
-                fetch("{{ route('fetch.data') }}")
-                    .then(res => res.json())
-                    .then(res => {
-                        if (res.status === 'offline') {
-                            console.warn('Raspi offline, stop polling');
-                            stopPolling();
-                            showOffline();
-                            return;
-                        }
-
-                        const data = res.data;
-
-                        document.getElementById('status').className = 'badge bg-success';
-                        document.getElementById('status').innerText = 'ONLINE';
-
-                        // update card dengan data backend
-                        latitudeCard.innerText = data?.gps?.lat ?? latitudeCard.innerText;
-                        longitudeCard.innerText = data?.gps?.lon ?? longitudeCard.innerText;
-                        dayaCard.innerText = data?.daya ?? dayaCard.innerText;
-                        accXCard.innerText = data?.imu?.acc?.[0] ?? accXCard.innerText;
-                        accYCard.innerText = data?.imu?.acc?.[1] ?? accYCard.innerText;
-                        accZCard.innerText = data?.imu?.acc?.[2] ?? accZCard.innerText;
-
-                        // update hidden form input
-                        reportLat.value = latitudeCard.innerText;
-                        reportLon.value = longitudeCard.innerText;
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        stopPolling();
-                    });
-            }
-
-            function startPolling() {
-                if (!polling) {
-                    polling = setInterval(fetchData, 1000);
-                }
-            }
-
-            function stopPolling() {
-                clearInterval(polling);
-                polling = null;
-            }
-
-            function showOffline() {
-                [latitudeCard, longitudeCard, dayaCard, accXCard, accYCard, accZCard].forEach(el => {
-                    el.innerText = '-';
-                });
-            }
-
-            async function startLaptopCamera(videoEl) {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: true
-                });
-                videoEl.srcObject = stream;
-                videoEl.classList.remove('d-none');
-            }
-
-            async function initCamera() {
-                const res = await fetch("{{ route('camera.status') }}");
-                const cam = await res.json();
-
-                // FRONT CAMERA
-                if (cam.front) {
-                    frontImg.src = cam.front_url;
-                    frontImg.classList.remove('d-none');
-                    frontStatus.innerText = "Raspi Camera";
-                } else {
-                    await startLaptopCamera(frontVid);
-                    frontStatus.innerText = "Laptop Camera";
-                }
-
-                // BACK CAMERA
-                if (cam.back) {
-                    backImg.src = cam.back_url;
-                    backImg.classList.remove('d-none');
-                    backStatus.innerText = "Raspi Camera";
-                } else {
-                    await startLaptopCamera(backVid);
-                    backStatus.innerText = "Laptop Camera";
-                }
-            }
-
+            /* ===================== RPM ===================== */
             function setRPM(value, max = 100) {
                 const arc = document.getElementById('rpmArc');
                 const text = document.getElementById('rpmValue');
-
                 const circumference = 345;
+
                 const percent = Math.min(value / max, 1);
-                const offset = circumference * (1 - percent);
-
-                arc.style.strokeDashoffset = offset;
+                arc.style.strokeDashoffset = circumference * (1 - percent);
                 text.innerText = value;
-
-                // warna dinamis
-                if (percent < 0.6) arc.style.stroke = '#28a745';
-                else if (percent < 0.85) arc.style.stroke = '#ffc107';
-                else arc.style.stroke = '#dc3545';
             }
 
+            /* ===================== BATTERY ===================== */
             function setBattery(percent) {
                 const arc = document.getElementById('batteryArc');
                 const text = document.getElementById('batteryValue');
-
                 const circumference = 377;
-                const offset = circumference * (1 - percent / 100);
 
-                arc.style.strokeDashoffset = offset;
+                arc.style.strokeDashoffset = circumference * (1 - percent / 100);
                 text.innerText = percent + '%';
-
-                if (percent > 60) arc.style.stroke = '#28a745';
-                else if (percent > 30) arc.style.stroke = '#ffc107';
-                else arc.style.stroke = '#dc3545';
             }
-
-            // contoh awal dummy
-            setRPM(10);
-            setBattery(50);
-
-            initCamera();
-            startPolling();
-            fetchData();
         </script>
     @endsection

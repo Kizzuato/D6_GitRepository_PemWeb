@@ -40,13 +40,14 @@ class DashboardController extends Controller
         $host = config('services.raspi.host');
         $port = config('services.raspi.port');
 
+        $videoUrl = "http://$host:$port/video";
+
         return response()->json([
-            'front' => $this->checkCamera("http://$host:$port/front"),
-            'back'  => $this->checkCamera("http://$host:$port/back"),
-            'front_url' => "http://$host:$port/front",
-            'back_url'  => "http://$host:$port/back",
+            'front' => $this->checkCamera($videoUrl),
+            'front_url' => $videoUrl,
         ]);
     }
+
 
     private function checkCamera($url)
     {

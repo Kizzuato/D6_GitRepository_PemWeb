@@ -13,8 +13,14 @@
                             <i class="bi bi-camera text-white fs-5"></i> Live Front Camera
                         </h6>
                         <div class="card bg-secondary p-2 text-center">
-                            <img id="frontImg" class="img-fluid rounded d-none">
-                            <video id="frontVid" class="w-100 rounded d-none" autoplay muted playsinline></video>
+                            <img id="frontCam" class="img-fluid rounded"
+                                src="{{ config('services.raspi.host')
+                                    ? 'http://' . config('services.raspi.host') . ':' . config('services.raspi.port') . '/video'
+                                    : '' }}"
+                                alt="Front Camera" />
+
+                            <small class="text-muted">Live MJPEG Stream</small>
+
                             <small id="frontStatus" class="text-muted"></small>
                         </div>
                     </div>
@@ -227,83 +233,82 @@
         </div>
 
         <script>
-let polling = null;
+            let polling = null;
 
-const latitudeCard  = document.getElementById('latitudeCard');
-const longitudeCard = document.getElementById('longitudeCard');
-const dayaCard      = document.getElementById('dayaCard');
+            const latitudeCard = document.getElementById('latitudeCard');
+            const longitudeCard = document.getElementById('longitudeCard');
+            const dayaCard = document.getElementById('dayaCard');
 
-const accXCard = document.getElementById('accXCard');
-const accYCard = document.getElementById('accYCard');
-const accZCard = document.getElementById('accZCard');
+            const accXCard = document.getElementById('accXCard');
+            const accYCard = document.getElementById('accYCard');
+            const accZCard = document.getElementById('accZCard');
 
-const reportLat = document.getElementById('reportLat');
-const reportLon = document.getElementById('reportLon');
+            const reportLat = document.getElementById('reportLat');
+            const reportLon = document.getElementById('reportLon');
 
-function fetchData() {
-    fetch("{{ route('fetch.data') }}")
-        .then(res => res.json())
-        .then(res => {
+            function fetchData() {
+                fetch("{{ route('fetch.data') }}")
+                    .then(res => res.json())
+                    .then(res => {
 
-            /* ================= ENERGY ================= */
-            if (res.energy) {
-                dayaCard.innerText = res.energy.energy_kwh
-                    ? res.energy.energy_kwh.toFixed(5)
-                    : '-';
+                        /* ================= ENERGY ================= */
+                        if (res.energy) {
+                            dayaCard.innerText = res.energy.energy_kwh ?
+                                res.energy.energy_kwh.toFixed(5) :
+                                '-';
 
-                setBattery(
-                    Math.min(
-                        Math.round((res.energy.voltage / 240) * 100),
-                        100
-                    )
-                );
+                            setBattery(
+                                Math.min(
+                                    Math.round((res.energy.voltage / 240) * 100),
+                                    100
+                                )
+                            );
+                        }
+
+                        /* ================= GPS ================= */
+                        if (res.gps) {
+                            latitudeCard.innerText = res.gps.lat ?? '-';
+                            longitudeCard.innerText = res.gps.lon ?? '-';
+
+                            reportLat.value = res.gps.lat ?? '';
+                            reportLon.value = res.gps.lon ?? '';
+                        }
+
+                        /* ================= IMU ================= */
+                        if (res.imu?.acc) {
+                            accXCard.innerText = res.imu.acc[0]?.toFixed(2) ?? '-';
+                            accYCard.innerText = res.imu.acc[1]?.toFixed(2) ?? '-';
+                            accZCard.innerText = res.imu.acc[2]?.toFixed(2) ?? '-';
+                        }
+
+                        /* ================= RPM (SIMULASI DARI POWER) ================= */
+                        if (res.energy?.power) {
+                            const rpm = Math.min(Math.round(res.energy.power / 2), 100);
+                            setRPM(rpm);
+                        }
+                    })
+                    .catch(err => {
+                        console.error('MQTT fetch error', err);
+                        stopPolling();
+                        showOffline();
+                    });
             }
 
-            /* ================= GPS ================= */
-            if (res.gps) {
-                latitudeCard.innerText  = res.gps.lat ?? '-';
-                longitudeCard.innerText = res.gps.lon ?? '-';
-
-                reportLat.value = res.gps.lat ?? '';
-                reportLon.value = res.gps.lon ?? '';
+            function startPolling() {
+                if (!polling) polling = setInterval(fetchData, 1000);
             }
 
-            /* ================= IMU ================= */
-            if (res.imu?.acc) {
-                accXCard.innerText = res.imu.acc[0]?.toFixed(2) ?? '-';
-                accYCard.innerText = res.imu.acc[1]?.toFixed(2) ?? '-';
-                accZCard.innerText = res.imu.acc[2]?.toFixed(2) ?? '-';
+            function stopPolling() {
+                clearInterval(polling);
+                polling = null;
             }
 
-            /* ================= RPM (SIMULASI DARI POWER) ================= */
-            if (res.energy?.power) {
-                const rpm = Math.min(Math.round(res.energy.power / 2), 100);
-                setRPM(rpm);
+            function showOffline() {
+                [latitudeCard, longitudeCard, dayaCard, accXCard, accYCard, accZCard]
+                .forEach(el => el.innerText = '-');
             }
-        })
-        .catch(err => {
-            console.error('MQTT fetch error', err);
-            stopPolling();
-            showOffline();
-        });
-}
 
-function startPolling() {
-    if (!polling) polling = setInterval(fetchData, 1000);
-}
-
-function stopPolling() {
-    clearInterval(polling);
-    polling = null;
-}
-
-function showOffline() {
-    [latitudeCard, longitudeCard, dayaCard, accXCard, accYCard, accZCard]
-        .forEach(el => el.innerText = '-');
-}
-
-startPolling();
-fetchData();
-</script>
-
+            startPolling();
+            fetchData();
+        </script>
     @endsection
