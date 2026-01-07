@@ -2,170 +2,173 @@
 
 @section('content')
     <div class="row gap-4">
-
         {{-- ================= ENERGY MONITORING ================= --}}
         <div class="card bg-dark text-white">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">Energy Monitoring</h6>
+
                 <span id="device-status" class="badge bg-secondary">
                     <i class="fas fa-circle me-1"></i> Checking...
                 </span>
             </div>
 
+
+
             <div class="card-body">
                 <div class="row g-3">
 
-                    @php
-                        $cards = [
-                            ['Voltage', 'voltageCard'],
-                            ['Current', 'currentCard'],
-                            ['Power', 'powerCard'],
-                            ['Energy (Wh)', 'energyWhCard'],
-                            ['Energy (kWh)', 'energyKwhCard'],
-                            ['Cost (Rp)', 'biayaCard'],
-                        ];
-                    @endphp
-
-                    @foreach ($cards as [$label, $id])
-                        <div class="col-md-4">
-                            <div class="card bg-secondary h-100">
-                                <div class="card-header bg-success">{{ $label }}</div>
-                                <div class="card-body text-center">
-                                    <h4 id="{{ $id }}">-</h4>
-                                </div>
+                    {{-- Voltage --}}
+                    <div class="col-md-4">
+                        <div class="card bg-secondary h-100">
+                            <div class="card-header bg-success">Voltage</div>
+                            <div class="card-body text-center">
+                                <h4 id="voltageCard">-</h4>
                             </div>
                         </div>
-                    @endforeach
+                    </div>
 
-
-                </div>
-                <div class="mt-3">
-                    <div class="card bg-secondary h-100">
-                        <div class="card-header bg-warning text-dark">
-                            Monthly Estimation
-                        </div>
-                        <div class="card-body text-center">
-                            <h5 id="monthlyKwh">- kWh</h5>
-                            <h4 id="monthlyCost">Rp -</h4>
-                            <small class="text-muted">Estimasi 30 hari</small>
+                    {{-- Current --}}
+                    <div class="col-md-4">
+                        <div class="card bg-secondary h-100">
+                            <div class="card-header bg-success">Current</div>
+                            <div class="card-body text-center">
+                                <h4 id="currentCard">-</h4>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            {{-- ================= DAILY CHART ================= --}}
-            <div class="card bg-dark text-white">
-                <div class="card-header">
-                    <h6 class="mb-0">Daily Energy Usage (kWh)</h6>
-                </div>
-                <div class="card-body">
-                    <canvas id="energyChart" height="120"></canvas>
+                    {{-- Power --}}
+                    <div class="col-md-4">
+                        <div class="card bg-secondary h-100">
+                            <div class="card-header bg-success">Power</div>
+                            <div class="card-body text-center">
+                                <h4 id="powerCard">-</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Energy Wh --}}
+                    <div class="col-md-4">
+                        <div class="card bg-secondary h-100">
+                            <div class="card-header bg-success">Energy (Wh)</div>
+                            <div class="card-body text-center">
+                                <h4 id="energyWhCard">-</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Energy kWh --}}
+                    <div class="col-md-4">
+                        <div class="card bg-secondary h-100">
+                            <div class="card-header bg-success">Energy (kWh)</div>
+                            <div class="card-body text-center">
+                                <h4 id="energyKwhCard">-</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Cost --}}
+                    <div class="col-md-4">
+                        <div class="card bg-secondary h-100">
+                            <div class="card-header bg-success">Cost (Rp)</div>
+                            <div class="card-body text-center">
+                                <h4 id="biayaCard">-</h4>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- ================= JAVASCRIPT ================= --}}
+    <script>
+        let polling = null;
 
-        <script>
-            let polling = null;
-            const TARIF_PER_KWH = 1444;
+        const voltageCard = document.getElementById('voltageCard');
+        const currentCard = document.getElementById('currentCard');
+        const powerCard = document.getElementById('powerCard');
+        const energyWhCard = document.getElementById('energyWhCard');
+        const energyKwhCard = document.getElementById('energyKwhCard');
+        const biayaCard = document.getElementById('biayaCard');
 
-            /* ================= REALTIME ================= */
-            function fetchData() {
-                fetch("{{ route('mqttfetch.data') }}")
-                    .then(res => res.json())
-                    .then(res => {
-                        if (!res.energy) return;
-                        const e = res.energy;
+        function fetchData() {
+            fetch("{{ route('mqttfetch.data') }}")
+                .then(res => res.json())
+                .then(res => {
+                    if (!res.energy) return;
+                    const e = res.energy;
 
-                        voltageCard.innerText = e.voltage.toFixed(1) + ' V';
-                        currentCard.innerText = e.current.toFixed(2) + ' A';
-                        powerCard.innerText = e.power.toFixed(1) + ' W';
-                        energyWhCard.innerText = e.energy.toFixed(3) + ' Wh';
-                        energyKwhCard.innerText = e.energy_kwh.toFixed(5) + ' kWh';
-                        biayaCard.innerText = 'Rp ' + e.biaya_rp;
+                    voltageCard.innerText = e.voltage.toFixed(1) + ' V';
+                    currentCard.innerText = e.current.toFixed(2) + ' A';
+                    powerCard.innerText = e.power.toFixed(1) + ' W';
+                    energyWhCard.innerText = e.energy.toFixed(3) + ' Wh';
+                    energyKwhCard.innerText = e.energy_kwh.toFixed(5) + ' kWh';
+                    biayaCard.innerText = 'Rp ' + e.biaya_rp;
 
-                        setRPM(Math.min(Math.round(e.power / 2), 100));
-                        setBattery(Math.min(Math.round((e.voltage / 240) * 100), 100));
-                        calculateMonthlyPrediction(e.energy_kwh);
-                    });
+                    setRPM(Math.min(Math.round(e.power / 2), 100));
+                    setBattery(Math.min(Math.round((e.voltage / 240) * 100), 100));
+                })
+                .catch(() => stopPolling());
+        }
+
+        function startPolling() {
+            if (!polling) polling = setInterval(fetchData, 1000);
+        }
+
+        function stopPolling() {
+            clearInterval(polling);
+            polling = null;
+        }
+
+        function setRPM(value) {
+            const arc = document.getElementById('rpmArc');
+            const text = document.getElementById('rpmValue');
+            arc.style.strokeDashoffset = 345 * (1 - value / 100);
+            text.innerText = value;
+        }
+
+        function setBattery(percent) {
+            const arc = document.getElementById('batteryArc');
+            const text = document.getElementById('batteryValue');
+            arc.style.strokeDashoffset = 377 * (1 - percent / 100);
+            text.innerText = percent + '%';
+        }
+
+        const statusBadge = document.getElementById('device-status');
+
+        function setStatus(isOnline) {
+            if (isOnline) {
+                statusBadge.className = 'badge bg-success';
+                statusBadge.innerHTML = '<i class="fas fa-circle me-1"></i> ONLINE';
+            } else {
+                statusBadge.className = 'badge bg-danger';
+                statusBadge.innerHTML = '<i class="fas fa-circle me-1"></i> OFFLINE';
             }
+        }
 
-            function startPolling() {
-                if (!polling) polling = setInterval(fetchData, 1000);
+        async function checkStatus() {
+            try {
+                const res = await fetch("{{ route('mqttfetch.data') }}");
+                const data = await res.json();
+
+                // anggap device online kalau data energi ada
+                const isOnline = data.energy && Object.keys(data.energy).length > 0;
+                setStatus(isOnline);
+            } catch (err) {
+                setStatus(false);
             }
+        }
 
-            /* ================= RPM ================= */
-            function setRPM(value) {
-                rpmArc.style.strokeDashoffset = 345 * (1 - value / 100);
-                rpmValue.innerText = value;
-            }
+        // cek pertama
+        checkStatus();
 
-            /* ================= BATTERY ================= */
-            function setBattery(percent) {
-                batteryArc.style.strokeDashoffset = 377 * (1 - percent / 100);
-                batteryValue.innerText = percent + '%';
-            }
+        // refresh tiap 5 detik
+        setInterval(checkStatus, 5000);
 
-            /* ================= STATUS ================= */
-            function setStatus(isOnline) {
-                deviceStatus.className = 'badge ' + (isOnline ? 'bg-success' : 'bg-danger');
-                deviceStatus.innerHTML = `<i class="fas fa-circle me-1"></i> ${isOnline ? 'ONLINE' : 'OFFLINE'}`;
-            }
-
-            /* ================= MONTHLY ================= */
-            function calculateMonthlyPrediction(todayKwh) {
-                const kwh = todayKwh * 30;
-                const cost = kwh * TARIF_PER_KWH;
-                monthlyKwh.innerText = kwh.toFixed(2) + ' kWh';
-                monthlyCost.innerText = 'Rp ' + cost.toLocaleString('id-ID');
-            }
-
-            /* ================= DAILY CHART ================= */
-            const energyChart = new Chart(energyChartCtx = document.getElementById('energyChart'), {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        data: [],
-                        borderColor: '#28a745',
-                        backgroundColor: 'rgba(40,167,69,.15)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#ccc'
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                color: '#ccc'
-                            },
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // fetch('/energy/daily')
-            //     .then(res => res.json())
-            //     .then(data => {
-            //         energyChart.data.labels = data.map(d => d.date);
-            //         energyChart.data.datasets[0].data = data.map(d => d.kwh);
-            //         energyChart.update();
-            //     });
-
-            startPolling();
-            fetchData();
-        </script>
-    @endsection
+        startPolling();
+        fetchData();
+    </script>
+@endsection
