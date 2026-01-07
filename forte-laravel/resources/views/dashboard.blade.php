@@ -2,38 +2,56 @@
 
 @section('content')
     <div class="row gap-4">
-        <div class="card bg-dark text-white"> {{-- Monitoring Card --}}
+        <div class="card bg-dark text-white">
+
             <div class="mx-4 mt-2 d-flex justify-content-between">
             </div>
+
             <div class="card-body">
                 <div class="row g-3">
+
                     {{-- Front Camera --}}
                     <div class="col-md-6">
                         <h6 class="text-white mb-2">
                             <i class="bi bi-camera text-white fs-5"></i> Live Front Camera
                         </h6>
+
                         <div class="card bg-secondary p-2 text-center">
-                            <img id="frontImg" class="img-fluid rounded d-none">
-                            <video id="frontVid" class="w-100 rounded d-none" autoplay muted playsinline></video>
-                            <small id="frontStatus" class="text-muted"></small>
+                            <img
+                                src="http://192.168.137.207:5000/video"
+                                class="img-fluid rounded"
+                                style="max-height:480px;"
+                                alt="Front Camera">
+
+                            <small class="text-muted">
+                                Source: Raspberry Pi Flask Stream
+                            </small>
                         </div>
                     </div>
 
-                    {{-- Back Camera --}}
+                    {{-- Back Camera (Optional / Backup) --}}
                     <div class="col-md-6">
-                        <h6 class="text-white mb-2 ">
+                        <h6 class="text-white mb-2">
                             <i class="bi bi-camera text-white fs-5"></i> Live Back Camera
                         </h6>
+
                         <div class="card bg-secondary p-2 text-center">
-                            <img id="backImg" class="img-fluid rounded d-none">
-                            <video id="backVid" class="w-100 rounded d-none" autoplay muted playsinline></video>
-                            <small id="backStatus" class="text-muted"></small>
+                            <img
+                                src="http://192.168.137.207:5000/video"
+                                class="img-fluid rounded"
+                                style="max-height:480px;"
+                                alt="Back Camera">
+
+                            <small class="text-muted">
+                                Source: Raspberry Pi Flask Stream
+                            </small>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
-            {{-- sec lapor annomali --}}
+
+            {{-- ====================== FORM LAPOR ====================== --}}
             <div class="mb-4">
                 <div class="card-body">
                     <div class="fw-bold text-white mb-3">Laporkan Anomali</div>
@@ -76,6 +94,8 @@
 
 
         </div>
+
+        {{-- ===================== MONITORING CARD ===================== --}}
         <div class="card bg-dark text-white">
             <div class="card-header pb-0">
                 <h6 class="text-white mb-0">Monitoring Card</h6>
