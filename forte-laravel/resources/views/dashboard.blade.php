@@ -29,7 +29,6 @@
                         </div>
                     </div>
 
-                    {{-- Back Camera (Optional / Backup) --}}
                     <div class="col-md-6">
                         <h6 class="text-white mb-2">
                             <i class="bi bi-camera text-white fs-5"></i> Live Back Camera
@@ -37,10 +36,10 @@
 
                         <div class="card bg-secondary p-2 text-center">
                             <img id="backCam" class="img-fluid rounded"
-                                src="{{ config('services.raspi.host')
-                                    ? 'http://' . config('services.raspi.host') . ':' . config('services.raspi.port') . '/video'
+                                src="{{ config('services.esp.host')
+                                    ? 'http://' . config('services.esp.host') . ':' . config('services.esp.port') . '/stream'
                                     : '' }}"
-                                alt="Front Camera" />
+                                alt="Back Camera" />
 
                             <small class="text-muted">Live MJPEG Stream</small>
 
@@ -276,32 +275,32 @@
                 snapshotInput.value = snapshotUrl;
             });
 
-            /* ===================== DUMMY DATA ===================== */
-            function rand(min, max, fixed = 2) {
-                return (Math.random() * (max - min) + min).toFixed(fixed);
-            }
+            // /* ===================== DUMMY DATA ===================== */
+            // function rand(min, max, fixed = 2) {
+            //     return (Math.random() * (max - min) + min).toFixed(fixed);
+            // }
 
-            function updateDummy() {
-                const lat = rand(-90, 90);
-                const lon = rand(-180, 180);
+            // function updateDummy() {
+            //     const lat = rand(-90, 90);
+            //     const lon = rand(-180, 180);
 
-                latitudeCard.innerText = lat;
-                longitudeCard.innerText = lon;
-                dayaCard.innerText = rand(0, 100, 0);
+            //     latitudeCard.innerText = lat;
+            //     longitudeCard.innerText = lon;
+            //     dayaCard.innerText = rand(0, 100, 0);
 
-                accXCard.innerText = rand(-10, 10);
-                accYCard.innerText = rand(-10, 10);
-                accZCard.innerText = rand(-10, 10);
+            //     accXCard.innerText = rand(-10, 10);
+            //     accYCard.innerText = rand(-10, 10);
+            //     accZCard.innerText = rand(-10, 10);
 
-                reportLat.value = lat;
-                reportLon.value = lon;
+            //     reportLat.value = lat;
+            //     reportLon.value = lon;
 
-                setRPM(Math.floor(rand(0, 100, 0)));
-                setBattery(Math.floor(rand(0, 100, 0)));
-            }
+            //     setRPM(Math.floor(rand(0, 100, 0)));
+            //     setBattery(Math.floor(rand(0, 100, 0)));
+            // }
 
-            setInterval(updateDummy, 1000);
-            updateDummy();
+            // setInterval(updateDummy, 1000);
+            // updateDummy();
 
             /* ===================== RPM ===================== */
             function setRPM(value, max = 100) {
@@ -323,5 +322,45 @@
                 arc.style.strokeDashoffset = circumference * (1 - percent / 100);
                 text.innerText = percent + '%';
             }
+
+            function fetchMQTTData() {
+                fetch("{{ route('mqttfetch.data') }}")
+                    .then(res => res.json())
+                    .then(data => {
+
+                        /* ========== GPS ========== */
+                        if (data.gps && data.gps.lat !== undefined) {
+                            latitudeCard.innerText = data.gps.lat.toFixed(6);
+                            longitudeCard.innerText = data.gps.lon.toFixed(6);
+
+                            reportLat.value = data.gps.lat;
+                            reportLon.value = data.gps.lon;
+                        }
+
+                        /* ========== ENERGY ========== */
+                        if (data.energy && data.energy.energy_kwh !== undefined) {
+                            dayaCard.innerText = data.energy.energy_kwh.toFixed(4) + ' kWh';
+
+                            // RPM simulasi dari power
+                            setRPM(Math.min(Math.round(data.energy.power / 2), 100));
+
+                            // Battery simulasi dari voltage
+                            setBattery(Math.min(Math.round((data.energy.voltage / 240) * 100), 100));
+                        }
+
+                        /* ========== IMU ========== */
+                        if (data.imu && data.imu.acc) {
+                            accXCard.innerText = data.imu.acc[0];
+                            accYCard.innerText = data.imu.acc[1];
+                            accZCard.innerText = data.imu.acc[2];
+                        }
+
+                    })
+                    .catch(err => console.error('MQTT fetch error:', err));
+            }
+
+            // polling tiap 1 detik
+            setInterval(fetchMQTTData, 1000);
+            fetchMQTTData();
         </script>
     @endsection

@@ -29,12 +29,12 @@ class AdminUserSeeder extends Seeder
         // ]);
         // 2. Buat Akun Superadmin Default
         $user = User::create([
-            'username' => 'Super Admin Forte',
-            'email' => 'superadmin@forte.com',
+            'username' => 'Zahratu',
+            'email' => 'admin@forte.com',
             'password' => bcrypt('password123'), // Ganti sesuai mau lo
         ]);
 
         // 3. Tempelkan Role ke User
-        $user->assignRole('superadmin');
+        $user->assignRole('admin');
     }
 }

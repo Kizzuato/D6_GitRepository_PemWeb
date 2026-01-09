@@ -57,7 +57,7 @@
             @endhasanyrole
 
             {{-- Menu dari kode pertama, hanya untuk admin & superadmin --}}
-            @hasanyrole('admin|superadmin')
+            @hasanyrole('admin')
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
                     href="{{ route('admin.dashboard') }}">
@@ -87,7 +87,8 @@
                     <span class="nav-link-text ms-1 text-white">Manage Sensors</span>
                 </a>
             </li> --}}
-
+            @endhasanyrole
+            @hasanyrole('supervisor')
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('admin.reports') ? 'active' : '' }}" href="/admin/reports">
                     <div

@@ -78,13 +78,70 @@
                     </div>
 
                 </div>
+                <div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card bg-dark text-white shadow-lg border-0">
+                                <div class="card-header border-0">
+                                    <h6 class="mb-0">Power Usage Chart</h6>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="powerChart" height="90"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card bg-dark text-white shadow-lg border-0">
+                                <div class="card-header border-0 d-flex justify-content-between">
+                                    <h6 class="mb-0">Energy Log Table</h6>
+
+                                    <div class="d-flex gap-2">
+                                        <input type="date" id="filterDate"
+                                            class="form-control form-control-sm bg-dark text-white">
+                                        <input type="text" id="searchInput"
+                                            class="form-control form-control-sm bg-dark text-white" placeholder="Search...">
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-white ps-4">Time</th>
+                                                <th class="text-white">Voltage (V)</th>
+                                                <th class="text-white">Current (A)</th>
+                                                <th class="text-white">Power (W)</th>
+                                                <th class="text-white">Energy (kWh)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="logTableBody"></tbody>
+                                    </table>
+                                </div>
+
+                                <div class="card-footer d-flex justify-content-end">
+                                    <nav>
+                                        <ul class="pagination pagination-sm mb-0" id="pagination"></ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
         </div>
     </div>
 
     {{-- ================= JAVASCRIPT ================= --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        let currentPage = 1;
+        let powerChart;
         let polling = null;
 
         const voltageCard = document.getElementById('voltageCard');
@@ -112,6 +169,71 @@
                     setBattery(Math.min(Math.round((e.voltage / 240) * 100), 100));
                 })
                 .catch(() => stopPolling());
+        }
+
+        function loadLogs(page = 1) {
+            const search = document.getElementById('searchInput').value;
+            const date = document.getElementById('filterDate').value;
+
+            fetch(`/api/power/log-table?page=${page}&search=${search}&date=${date}`)
+                .then(res => res.json())
+                .then(res => {
+                    const tbody = document.getElementById('logTableBody');
+                    tbody.innerHTML = '';
+
+                    res.data.forEach((r, i) => {
+                        tbody.innerHTML += `
+                    <tr style="background-color:${i % 2 ? '#1a1a1a' : '#14451a'}">
+                        <td class="ps-4 text-xs">${r.created_at}</td>
+                        <td>${r.voltage}</td>
+                        <td>${r.current}</td>
+                        <td>${r.power}</td>
+                        <td>${r.energy_kwh}</td>
+                    </tr>`;
+                    });
+
+                    renderPagination(res);
+                });
+        }
+
+        function renderPagination(res) {
+            const pag = document.getElementById('pagination');
+            pag.innerHTML = '';
+
+            for (let i = 1; i <= res.last_page; i++) {
+                pag.innerHTML += `
+            <li class="page-item ${i === res.current_page ? 'active' : ''}">
+                <button class="page-link bg-dark text-white" onclick="loadLogs(${i})">${i}</button>
+            </li>`;
+            }
+        }
+
+        function loadChart() {
+            fetch('/api/power/chart-power')
+                .then(res => res.json())
+                .then(data => {
+                    const labels = data.map(d => d.time);
+                    const values = data.map(d => d.power);
+
+                    if (!powerChart) {
+                        powerChart = new Chart(document.getElementById('powerChart'), {
+                            type: 'line',
+                            data: {
+                                labels,
+                                datasets: [{
+                                    label: 'Power (W)',
+                                    data: values,
+                                    borderColor: '#00ff99',
+                                    tension: 0.3
+                                }]
+                            }
+                        });
+                    } else {
+                        powerChart.data.labels = labels;
+                        powerChart.data.datasets[0].data = values;
+                        powerChart.update();
+                    }
+                });
         }
 
         function startPolling() {
@@ -162,13 +284,20 @@
             }
         }
 
+        document.getElementById('searchInput').addEventListener('input', () => loadLogs());
+        document.getElementById('filterDate').addEventListener('change', () => loadLogs());
+
+
         // cek pertama
         checkStatus();
 
         // refresh tiap 5 detik
-        setInterval(checkStatus, 5000);
 
         startPolling();
+
+        loadLogs();
+        loadChart();
         fetchData();
+        setInterval(checkStatus, 5000);
     </script>
 @endsection

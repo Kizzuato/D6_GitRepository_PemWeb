@@ -13,5 +13,6 @@ class Power extends Model
         'power',
         'energy_wh',
         'energy_kwh',
+        'created_at'
     ];
 }

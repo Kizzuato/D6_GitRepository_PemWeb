@@ -42,7 +42,13 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 Route::get('/power', [PowerController::class, 'index'])->name('power');
+Route::get('/api/power/log-table', [PowerController::class, 'logTable']);
+Route::get('/api/power/chart-power', [PowerController::class, 'chartPower']);
+
+
+
 Route::get('/fetch-mqtt-data', [MQTTController::class, 'getLatestData'])->name('mqttfetch.data');
 
 // Fetch realtime / camera
@@ -70,10 +76,10 @@ Route::post('/reports', [ReportController::class, 'store'])->name('reports.store
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN ONLY ROUTES (spatie role: admin|superadmin)
+| ADMIN ONLY ROUTES (spatie role: admin|supervisor)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:admin|superadmin'])->group(function () {
+Route::middleware(['auth', 'role:admin|supervisor'])->group(function () {
 
     // Admin Dashboard
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');

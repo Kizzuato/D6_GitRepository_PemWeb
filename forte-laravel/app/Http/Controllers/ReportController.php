@@ -14,7 +14,7 @@ class ReportController extends Controller
     // -------------------
     public function index()
     {
-        if (Auth::user()->hasRole('admin|superadmin')) {
+        if (Auth::user()->hasRole('admin|supervisor')) {
             abort(403); // admin jangan akses route user
         }
 
@@ -24,7 +24,7 @@ class ReportController extends Controller
 
     public function store(Request $request)
     {
-        if (Auth::user()->hasRole('admin|superadmin')) {
+        if (Auth::user()->hasRole('admin|supervisor')) {
             abort(403); // admin jangan akses route user
         }
 
@@ -64,7 +64,7 @@ class ReportController extends Controller
     // -------------------
     public function adminIndex()
     {
-        if (!Auth::user()->hasRole('admin|superadmin')) {
+        if (!Auth::user()->hasRole('admin|supervisor')) {
             abort(403); // user biasa nggak boleh akses admin
         }
 
@@ -74,7 +74,7 @@ class ReportController extends Controller
 
     public function approve($id)
     {
-        if (!Auth::user()->hasRole('admin|superadmin')) abort(403);
+        if (!Auth::user()->hasRole('admin|supervisor')) abort(403);
 
         $report = Report::findOrFail($id);
         $report->status = 'approved';
@@ -85,7 +85,7 @@ class ReportController extends Controller
 
     public function reject($id)
     {
-        if (!Auth::user()->hasRole('admin|superadmin')) abort(403);
+        if (!Auth::user()->hasRole('admin|supervisor')) abort(403);
 
         $report = Report::findOrFail($id);
         $report->status = 'rejected';
