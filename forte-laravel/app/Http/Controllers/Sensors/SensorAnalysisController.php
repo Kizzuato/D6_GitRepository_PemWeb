@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Sensors;
 
+use App\Http\Controllers\Controller;
 use App\Models\Sensor;
 use Illuminate\Support\Facades\Http;
 

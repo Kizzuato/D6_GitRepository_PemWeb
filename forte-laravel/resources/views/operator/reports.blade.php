@@ -17,7 +17,6 @@
                             <th class="text-white">Lokasi (Lat, Long)</th>
                             <th class="text-white">Bukti</th>
                             <th class="text-white text-center">Status</th>
-                            <th class="text-white text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,27 +44,6 @@
                                     <span class="badge bg-success">Approved</span>
                                 @else
                                     <span class="badge bg-danger">Rejected</span>
-                                @endif
-                            </td>
-                            <td class="text-center">
-                                @if($r->status == 'pending')
-                                    {{-- Form Approve --}}
-                                    <form action="{{ route('reports.approve', $r) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-link text-success p-0 me-2">
-                                            <i class="bi bi-check-circle" style="font-size: 1.2rem;"></i>
-                                        </button>
-                                    </form>
-
-                                    {{-- Form Reject --}}
-                                    <form action="{{ route('reports.reject', $r) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-link text-danger p-0">
-                                            <i class="bi bi-x-circle" style="font-size: 1.2rem;"></i>
-                                        </button>
-                                    </form>
-                                @else
-                                    <span class="text-xs text-secondary">Validated</span>
                                 @endif
                             </td>
                         </tr>

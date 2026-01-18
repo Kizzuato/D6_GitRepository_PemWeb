@@ -198,7 +198,7 @@
             const search = document.getElementById('searchInput').value;
             const date = document.getElementById('filterDate').value;
 
-            fetch(`/api/power/log-table?page=${page}&search=${search}&date=${date}`)
+            fetch(`/power/api/log-table?page=${page}&search=${search}&date=${date}`)
                 .then(res => res.json())
                 .then(res => {
                     const tbody = document.getElementById('logTableBody');
@@ -232,7 +232,7 @@
         }
 
         function loadChart() {
-            fetch('/api/power/chart-power')
+            fetch('/power/api/chart-power')
                 .then(res => res.json())
                 .then(data => {
                     const labels = data.map(d => d.time);
@@ -341,7 +341,7 @@
         }
 
         function fetchPrediction() {
-            fetch('/api/power/prediction')
+            fetch('/power/api/prediction')
                 .then(res => res.json())
                 .then(res => {
                     if (res.predicted_cost !== undefined) {

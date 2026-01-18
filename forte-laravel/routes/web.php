@@ -1,15 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SensorController;
-use App\Http\Controllers\LogTableController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\PowerController;
-use App\Http\Controllers\MQTTController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Sensors\SensorController;
+use App\Http\Controllers\API\LogTableController;
+use App\Http\Controllers\Resources\ReportController;
+use App\Http\Controllers\Resources\UserController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Dashboard\PowerController;
+use App\Http\Controllers\API\MQTTController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,11 +17,11 @@ use App\Http\Controllers\MQTTController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return view('lp-awal');
+    return view('landing.lp-awal');
 })->name('home');
 
 Route::get('/about', function () {
-    return view('lp-about');
+    return view('landing.lp-about');
 })->name('about');
 
 /*
@@ -71,7 +71,7 @@ Route::middleware('auth')->group(function () {
 
     // Map & Tables
     Route::get('/map', function () {
-        return view('map');
+        return view('operator.map');
     })->name('map');
 
     Route::get('/table-data', [LogTableController::class, 'index'])->name('table-data');
@@ -79,19 +79,19 @@ Route::middleware('auth')->group(function () {
     // Settings Pages
     Route::prefix('settings')->group(function () {
         Route::get('/profile', function () {
-            return view('lp-setting-profile');
+            return view('landing.lp-setting-profile');
         })->name('settings.profile');
 
         Route::get('/wifi', function () {
-            return view('lp-setting-wifi');
+            return view('landing.lp-setting-wifi');
         })->name('settings.wifi');
 
         Route::get('/controller', function () {
-            return view('lp-setting-controller');
+            return view('landing.lp-setting-controller');
         })->name('settings.controller');
 
         Route::get('/', function () {
-            return view('lp-setting');
+            return view('landing.lp-setting');
         })->name('settings.index');
     });
 
@@ -110,7 +110,7 @@ Route::middleware(['auth', 'role:admin|supervisor'])->prefix('admin')->group(fun
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
 
     // User Management
-    Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class)->names('admin.users');
     Route::get('/users/export', [UserController::class, 'exportCsv'])->name('admin.users.export');
     Route::post('/users/import', [UserController::class, 'importCsv'])->name('admin.users.import');
 

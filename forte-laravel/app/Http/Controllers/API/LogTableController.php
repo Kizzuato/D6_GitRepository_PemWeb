@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,11 @@ class LogTableController extends Controller
         ->where('user_id', $userId)
         ->orderBy('created_at', 'desc')
         ->paginate(10);
-        
-        return view('table-data', compact('reports'));
+
+        if (auth()->user()->hasRole('admin')) {
+            return view('admin.reports', compact('reports'));
+        } else {
+            return view('operator.reports', compact('reports'));
+        }
     }
 }
