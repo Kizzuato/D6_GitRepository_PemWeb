@@ -4,11 +4,15 @@ namespace App\Providers;
 
 use App\Services\UserService;
 use App\Services\ReportService;
+use App\Services\RoleService;
+use App\Services\CreditScoreService;
 use App\Services\RaspiService;
 use App\Repositories\UserRepository;
 use App\Repositories\ReportRepository;
+use App\Repositories\RoleRepository;
 use App\Models\User;
 use App\Models\Report;
+use App\Models\Role;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -31,9 +35,15 @@ class RepositoryServiceProvider extends ServiceProvider
             return new ReportRepository(new Report());
         });
 
+        $this->app->bind(RoleRepository::class, function ($app) {
+            return new RoleRepository(new Role());
+        });
+
         // Register Services
         $this->app->singleton(UserService::class);
         $this->app->singleton(ReportService::class);
+        $this->app->singleton(RoleService::class);
+        $this->app->singleton(CreditScoreService::class);
         $this->app->singleton(RaspiService::class);
     }
 
@@ -45,3 +55,4 @@ class RepositoryServiceProvider extends ServiceProvider
         //
     }
 }
+

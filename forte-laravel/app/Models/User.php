@@ -15,6 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $username
  * @property string $email
  * @property string $password
+ * @property int $credit_score
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  */
@@ -26,6 +27,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'credit_score',
     ];
 
     protected $hidden = [
@@ -63,6 +65,14 @@ class User extends Authenticatable
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * Get credit score logs user
+     */
+    public function creditScoreLogs(): HasMany
+    {
+        return $this->hasMany(CreditScoreLog::class);
     }
 
     /**

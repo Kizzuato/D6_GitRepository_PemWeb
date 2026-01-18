@@ -12,6 +12,16 @@ use Illuminate\Database\Eloquent\Collection;
 class ReportService
 {
     /**
+     * @var CreditScoreService
+     */
+    private CreditScoreService $creditScoreService;
+
+    public function __construct(CreditScoreService $creditScoreService)
+    {
+        $this->creditScoreService = $creditScoreService;
+    }
+
+    /**
      * Get reports untuk user
      */
     public function getUserReports(int $userId): Collection
@@ -52,20 +62,44 @@ class ReportService
     }
 
     /**
-     * Approve report
+     * Approve report dan update credit score
      */
     public function approveReport(Report $report): Report
     {
         $report->update(['status' => 'approved']);
+
+        // Tambah 5 poin credit score ke user
+        $this->creditScoreService->addPoints(
+            $report->user,
+            'report_approved',
+            [
+                'report_id' => $report->id,
+                'report_title' => $report->title,
+            ]
+        );
+
         return $report;
     }
 
     /**
-     * Reject report
+     * Reject report dan update credit score
      */
     public function rejectReport(Report $report): Report
     {
         $report->update(['status' => 'rejected']);
+
+        // Kurang 5 poin credit score ke user
+        $this->creditScoreService->updateCreditScore(
+            $report->user,
+            -5,
+            'Laporan ditolak oleh admin',
+            'report_rejected',
+            [
+                'report_id' => $report->id,
+                'report_title' => $report->title,
+            ]
+        );
+
         return $report;
     }
 

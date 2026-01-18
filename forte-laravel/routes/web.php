@@ -8,7 +8,9 @@ use App\Http\Controllers\API\LogTableController;
 use App\Http\Controllers\Resources\ReportController;
 use App\Http\Controllers\Resources\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Dashboard\PowerController;
+use App\Http\Controllers\Dashboard\CreditScoreController;
 use App\Http\Controllers\API\MQTTController;
 
 /*
@@ -99,6 +101,13 @@ Route::middleware('auth')->group(function () {
     // Report Routes for Users
     Route::resource('reports', ReportController::class)
         ->only(['index', 'store']);
+
+    // Credit Score Routes
+    Route::get('/credit-score', [CreditScoreController::class, 'show'])->name('credit-score.show');
+    Route::prefix('api/credit-score')->group(function () {
+        Route::get('/info', [CreditScoreController::class, 'getScoreInfo'])->name('credit-score.info');
+        Route::get('/history', [CreditScoreController::class, 'getHistory'])->name('credit-score.history');
+    });
 });
 
 /*
@@ -114,6 +123,9 @@ Route::middleware(['auth', 'role:admin|supervisor'])->prefix('admin')->group(fun
     Route::resource('users', UserController::class)->except(['show', 'create', 'edit'])->names('admin.users');
     Route::get('/users/export', [UserController::class, 'exportCsv'])->name('admin.users.export');
     Route::post('/users/import', [UserController::class, 'importCsv'])->name('admin.users.import');
+
+    // Role Management
+    Route::resource('roles', RoleController::class)->except(['create', 'edit']);
 
     // Sensor Management
     Route::resource('sensors', SensorController::class);
