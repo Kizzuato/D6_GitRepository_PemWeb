@@ -231,4 +231,4 @@ Untuk pertanyaan atau dukungan terkait proyek, hubungi anggota kelompok D6.
 
 ---
 
-**Dikembangkan dengan Laravel 10 | Tahun Akademik 2024-2025**
+**Dikembangkan dengan Laravel 10 | Tahun Akademik 2025-2026**
