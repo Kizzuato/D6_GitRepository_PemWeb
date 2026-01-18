@@ -47,8 +47,8 @@ class ReportSeeder extends Seeder
                 'longitude' => $hasLocation
                     ? $faker->longitude(-180, 180)
                     : null,
-                'status' => $faker->randomElement($statuses),
-                'user_id' => $faker->randomElement($userIds),
+                'status' => 'pending',
+                'user_id' => 8,
                 'created_at' => Carbon::now()->subDays(rand(0, 14)),
                 'updated_at' => Carbon::now(),
             ]);

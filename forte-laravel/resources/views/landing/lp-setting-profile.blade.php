@@ -276,13 +276,11 @@
 <body>
 
     {{-- Navbar --}}
-    <x-navigation.navbar
-        :items="[
-            ['route' => 'dashboard', 'label' => 'Dashboard'],
-            ['route' => 'settings.index', 'label' => 'Setting'],
-            ['route' => 'about', 'label' => 'About Rover']
-        ]"
-    />
+    <x-navigation.navbar :items="[
+        ['route' => 'dashboard', 'label' => 'Dashboard'],
+        ['route' => 'settings.index', 'label' => 'Setting'],
+        ['route' => 'about', 'label' => 'About Rover'],
+    ]" />
 
     {{-- Main Content --}}
     <div class="profile-container">
@@ -294,32 +292,24 @@
                 <div class="card-profile text-center">
                     {{-- Avatar Besar --}}
                     <div class="profile-avatar-lg">
-                        {{ Auth::check() ? substr(Auth::user()->name, 0, 2) : 'AH' }}
+                        {{ Auth::user()->username ? substr(strtoupper(Auth::user()->username), 0, 2) : 'AU' }}
                     </div>
 
-                    <h4 class="mb-1">{{ Auth::check() ? Auth::user()->name : 'Akhsan Hakiki' }}</h4>
-                    <span class="user-role-badge">Super Admin</span>
+                    <h4 class="mb-1">{{ Auth::user()->username }}</h4>
+                    <span class="user-role-badge">{{ Auth::user()->roles->first()?->name ?? 'User' }}</span>
 
                     <div class="text-start mt-3">
                         <div class="detail-row">
                             <span class="detail-label">Email</span>
-                            {{-- Gunakan data dummy jika user belum login/backend belum siap --}}
-                            <span
-                                class="detail-value">{{ Auth::check() ? Auth::user()->email : 'akhsan@forte.com' }}</span>
+                            <span class="detail-value">{{ Auth::user()->email }}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="detail-label">Phone</span>
-                            <span
-                                class="detail-value">{{ Auth::check() ? Auth::user()->phone ?? '+62 812 3456 7890' : '+62 812 3456 7890' }}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Location</span>
-                            <span
-                                class="detail-value">{{ Auth::check() ? Auth::user()->location ?? 'Bandung, ID' : 'Bandung, ID' }}</span>
+                            <span class="detail-label">Credit Score</span>
+                            <span class="detail-value">{{ Auth::user()->credit_score }}/100</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Member Since</span>
-                            <span class="detail-value">Jan 2024</span>
+                            <span class="detail-value">{{ Auth::user()->created_at->format('M Y') }}</span>
                         </div>
                         <div class="detail-row border-0">
                             <span class="detail-label">Status</span>
@@ -343,19 +333,17 @@
                         <div class="card-profile">
                             <h5 class="mb-4 d-flex align-items-center justify-content-between">
                                 <span><i class="bi bi-shield-check me-2 text-success"></i> Credit Score</span>
-                                <span class="badge bg-dark border border-secondary text-secondary"
-                                    style="font-size: 0.6rem;">LIVE</span>
                             </h5>
 
                             <div class="chart-container">
                                 <canvas id="creditScoreChart"></canvas>
                                 <div class="credit-score-overlay">
-                                    <div class="score-val" id="scoreValue">850</div>
-                                    <div class="score-label" id="scoreLabel">Excellent</div>
+                                    <div class="score-val" id="scoreValue">{{ $creditScoreInfo['score'] }}</div>
+                                    <div class="score-label" id="scoreLabel">{{ $creditScoreInfo['category'] }}</div>
                                 </div>
                             </div>
                             <p class="text-center text-muted small mt-2">
-                                Skor Anda sangat baik. Pertahankan performa pelaporan Anda.
+                                {{ $creditScoreInfo['description'] }}
                             </p>
                         </div>
                     </div>
@@ -365,16 +353,13 @@
                         <div class="card-profile points-card">
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
-                                    <h5 class="mb-0"><i class="bi bi-gem me-2 text-warning"></i> Total Points</h5>
-                                    <small class="text-muted">Accumulated rewards</small>
-                                </div>
-                                <div class="points-highlight" id="totalPoints">
-                                    12,450
+                                    <h5 class="mb-0"><i class="bi bi-graph-up me-2 text-success"></i> Score Trend</h5>
+                                    <small class="text-muted">7 days trend</small>
                                 </div>
                             </div>
 
                             <div style="height: 180px; width: 100%;">
-                                <canvas id="pointsChart"></canvas>
+                                <canvas id="scoreChartHistory"></canvas>
                             </div>
                         </div>
                     </div>
@@ -384,40 +369,42 @@
                 <div class="row mt-4">
                     <div class="col-12">
                         <div class="card-profile">
-                            <h5 class="mb-3">Recent Activities</h5>
+                            <h5 class="mb-3">Recent Credit Score Activities</h5>
                             <div class="table-responsive">
                                 <table class="table table-dark table-borderless align-middle mb-0">
                                     <thead class="text-secondary text-uppercase text-xs">
                                         <tr>
                                             <th>Activity</th>
-                                            <th>Date</th>
-                                            <th class="text-end">Points</th>
+                                            <th>Type</th>
+                                            <th class="text-end">Change</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="bg-success rounded-circle p-1 me-2"
-                                                        style="width:8px; height:8px;"></div>
-                                                    Submitted Incident Report
-                                                </div>
-                                            </td>
-                                            <td class="text-muted text-sm">Today, 10:23 AM</td>
-                                            <td class="text-end text-success">+50</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="bg-secondary rounded-circle p-1 me-2"
-                                                        style="width:8px; height:8px;"></div>
-                                                    Updated Profile Info
-                                                </div>
-                                            </td>
-                                            <td class="text-muted text-sm">Yesterday</td>
-                                            <td class="text-end text-muted">0</td>
-                                        </tr>
+                                        @forelse($recentActivities as $activity)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="bg-{{ $activity['change_amount'] >= 0 ? 'success' : 'danger' }} rounded-circle p-1 me-2"
+                                                            style="width:8px; height:8px;"></div>
+                                                        {{ $activity['reason'] }}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <small
+                                                        class="text-muted">{{ str_replace('_', ' ', $activity['action_type']) }}</small>
+                                                </td>
+                                                <td
+                                                    class="text-end text-{{ $activity['change_amount'] >= 0 ? 'success' : 'danger' }}">
+                                                    {{ $activity['change_amount'] >= 0 ? '+' : '' }}{{ $activity['change_amount'] }}
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted py-3">
+                                                    Belum ada riwayat perubahan score
+                                                </td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -445,29 +432,29 @@
                         <div class="mb-3">
                             <label class="form-label text-secondary small">Full Name</label>
                             <input type="text" class="form-control form-control-dark"
-                                value="{{ Auth::check() ? Auth::user()->name : 'Akhsan Hakiki' }}" required>
+                                value="{{ Auth::user()->username }}" readonly>
                         </div>
                         <div class="mb-3">
                             <label class="form-label text-secondary small">Email Address</label>
                             <input type="email" class="form-control form-control-dark"
-                                value="{{ Auth::check() ? Auth::user()->email : 'akhsan@forte.com' }}" required>
+                                value="{{ Auth::user()->email }}" readonly>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label text-secondary small">Phone Number</label>
+                                <label class="form-label text-secondary small">Credit Score</label>
                                 <input type="text" class="form-control form-control-dark"
-                                    value="+62 812 3456 7890">
+                                    value="{{ Auth::user()->credit_score }}/100" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label text-secondary small">Location</label>
-                                <input type="text" class="form-control form-control-dark" value="Bandung, ID">
+                                <label class="form-label text-secondary small">Member Since</label>
+                                <input type="text" class="form-control form-control-dark"
+                                    value="{{ Auth::user()->created_at->format('M d, Y') }}" readonly>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary btn-sm"
-                            data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success btn-sm">Save Changes</button>
+                            data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>
@@ -480,6 +467,36 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+        // Data dari backend
+        const creditScore = {{ $creditScoreInfo['score'] }};
+        const maxScore = 100;
+        const categoryColor = '{{ $creditScoreInfo['color'] }}';
+        const categoryText = '{{ $creditScoreInfo['category'] }}';
+        const chartLabels = @json($chartLabels);
+        const chartData = @json($chartData);
+
+        // Color mapping
+        const colorMap = {
+            'success': {
+                gradient: ['#2d7a32', '#4caf50'],
+                text: '#4caf50'
+            },
+            'info': {
+                gradient: ['#0066cc', '#0099ff'],
+                text: '#0099ff'
+            },
+            'warning': {
+                gradient: ['#ffc107', '#ff9800'],
+                text: '#ffc107'
+            },
+            'danger': {
+                gradient: ['#dc3545', '#ff6b6b'],
+                text: '#dc3545'
+            }
+        };
+
+        const colors = colorMap[categoryColor] || colorMap['success'];
+
         // --- 1. Randomizer Utility ---
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -489,22 +506,17 @@
         const ctxScore = document.getElementById('creditScoreChart').getContext('2d');
         const scoreValEl = document.getElementById('scoreValue');
         const scoreLabelEl = document.getElementById('scoreLabel');
-        const maxScore = 1000;
 
         let gradientGreen = ctxScore.createLinearGradient(0, 0, 200, 0);
-        gradientGreen.addColorStop(0, '#2d7a32');
-        gradientGreen.addColorStop(1, '#4caf50');
-
-        let gradientWarn = ctxScore.createLinearGradient(0, 0, 200, 0);
-        gradientWarn.addColorStop(0, '#dc3545');
-        gradientWarn.addColorStop(1, '#ffc107');
+        gradientGreen.addColorStop(0, colors.gradient[0]);
+        gradientGreen.addColorStop(1, colors.gradient[1]);
 
         const creditScoreChart = new Chart(ctxScore, {
             type: 'doughnut',
             data: {
                 labels: ['Score', 'Remaining'],
                 datasets: [{
-                    data: [850, 150],
+                    data: [creditScore, maxScore - creditScore],
                     backgroundColor: [gradientGreen, '#444'],
                     borderWidth: 0,
                     borderRadius: 20,
@@ -531,55 +543,30 @@
             }
         });
 
-        function updateCreditScoreRandom() {
-            const newScore = getRandomInt(300, 1000);
-            const remaining = maxScore - newScore;
+        // --- 3. Score History Chart Logic (Line Chart - SUCCESS THEME) ---
+        const ctxHistory = document
+            .getElementById('scoreChartHistory')
+            .getContext('2d');
 
-            let labelText = "Excellent";
-            let color = gradientGreen;
-            let textColor = "#4caf50";
+        // Gradient hijau
+        let gradientFill = ctxHistory.createLinearGradient(0, 0, 0, 400);
+        gradientFill.addColorStop(0, 'rgba(76, 175, 80, 0.35)'); // #4caf50
+        gradientFill.addColorStop(1, 'rgba(45, 122, 50, 0.0)'); // #2d7a32
 
-            if (newScore < 500) {
-                labelText = "Poor";
-                color = gradientWarn;
-                textColor = "#dc3545";
-            } else if (newScore < 700) {
-                labelText = "Good";
-                color = gradientGreen;
-                textColor = "#ffc107";
-            }
-
-            creditScoreChart.data.datasets[0].data = [newScore, remaining];
-            creditScoreChart.data.datasets[0].backgroundColor[0] = color;
-            creditScoreChart.update();
-
-            scoreValEl.innerText = newScore;
-            scoreValEl.style.color = textColor;
-            scoreLabelEl.innerText = labelText;
-            scoreLabelEl.style.color = textColor;
-        }
-
-        // --- 3. Points Chart Logic ---
-        const ctxPoints = document.getElementById('pointsChart').getContext('2d');
-        const totalPointsEl = document.getElementById('totalPoints');
-
-        let gradientFill = ctxPoints.createLinearGradient(0, 0, 0, 400);
-        gradientFill.addColorStop(0, 'rgba(76, 175, 80, 0.3)');
-        gradientFill.addColorStop(1, 'rgba(76, 175, 80, 0.0)');
-
-        const pointsChart = new Chart(ctxPoints, {
+        const scoreHistoryChart = new Chart(ctxHistory, {
             type: 'line',
             data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                labels: chartLabels,
                 datasets: [{
-                    label: 'Points',
-                    data: [120, 190, 150, 250, 220, 300, 350],
+                    label: 'Score Change',
+                    data: chartData,
                     borderColor: '#4caf50',
                     backgroundColor: gradientFill,
                     borderWidth: 3,
-                    pointBackgroundColor: '#fff',
+                    pointBackgroundColor: '#ffffff',
                     pointBorderColor: '#4caf50',
-                    pointRadius: 4,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
                     fill: true,
                     tension: 0.4
                 }]
@@ -590,6 +577,20 @@
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: '#4caf50',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                let value = context.parsed.y || 0;
+                                return (value >= 0 ? '+' : '') + value + ' points';
+                            }
+                        }
                     }
                 },
                 scales: {
@@ -598,15 +599,16 @@
                             display: false
                         },
                         ticks: {
-                            color: '#888'
+                            color: '#8bcf94' // hijau soft
                         }
                     },
                     y: {
                         grid: {
-                            display: false
+                            color: 'rgba(76, 175, 80, 0.08)'
                         },
                         ticks: {
-                            display: false
+                            color: '#8bcf94',
+                            stepSize: 5
                         },
                         border: {
                             display: false
@@ -616,25 +618,34 @@
             }
         });
 
-        function updatePointsRandom() {
-            const newData = [];
-            for (let i = 0; i < 7; i++) {
-                newData.push(getRandomInt(50, 400));
+
+        // Fetch latest credit score dari API
+        async function fetchCreditScoreData() {
+            try {
+                const response = await fetch('{{ route('credit-score.info') }}');
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    const data = result.data;
+                    const remaining = maxScore - data.score;
+
+                    // Update chart
+                    creditScoreChart.data.datasets[0].data = [data.score, remaining];
+                    creditScoreChart.update();
+
+                    // Update text
+                    scoreValEl.innerText = data.score;
+                    scoreValEl.style.color = colors.text;
+                    scoreLabelEl.innerText = data.category;
+                    scoreLabelEl.style.color = colors.text;
+                }
+            } catch (error) {
+                console.error('Error fetching credit score:', error);
             }
-            const sum = newData.reduce((a, b) => a + b, 0);
-            const totalDummy = 10000 + (sum * 5);
-
-            pointsChart.data.datasets[0].data = newData;
-            pointsChart.update();
-
-            totalPointsEl.innerText = totalDummy.toLocaleString('en-US');
         }
 
-        // --- Interval Update (Simulasi Realtime) ---
-        setInterval(() => {
-            updateCreditScoreRandom();
-            updatePointsRandom();
-        }, 3000);
+        // Update setiap 10 detik
+        setInterval(fetchCreditScoreData, 10000);
     </script>
 </body>
 

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Dashboard\PowerController;
 use App\Http\Controllers\Dashboard\CreditScoreController;
+use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Controllers\API\MQTTController;
 
 /*
@@ -81,9 +82,7 @@ Route::middleware('auth')->group(function () {
 
     // Settings Pages
     Route::prefix('settings')->group(function () {
-        Route::get('/profile', function () {
-            return view('landing.lp-setting-profile');
-        })->name('settings.profile');
+        Route::get('/profile', [ProfileController::class, 'index'])->name('settings.profile');
 
         Route::get('/wifi', function () {
             return view('landing.lp-setting-wifi');
