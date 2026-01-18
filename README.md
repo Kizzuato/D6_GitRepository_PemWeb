@@ -1,4 +1,4 @@
-# FORTE - Energy Management System
+# FORTE - Sistem Monitoring IoT & Laporan Insiden
 
 <p align="center">
   <strong>Tugas Akhir Pemrograman Website - Kelompok D6</strong>
@@ -214,7 +214,7 @@ php artisan test --coverage
 
 ## 👥 Anggota Kelompok D6
 
-- **Project**: FORTE - Energy Management System
+- **Project**: FORTE - Sistem Monitoring IoT & Laporan Insiden
 - **Kelompok**: D6
 - **Mata Kuliah**: Tugas Akhir Pemrograman Website
 - **Anggota 1**: 152024127 Dzakiyya Puteri Aulia
