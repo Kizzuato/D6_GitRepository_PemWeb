@@ -186,6 +186,8 @@
                 align-items: center;
                 gap: 10px;
             }
+
+            
         }
     </style>
 </head>

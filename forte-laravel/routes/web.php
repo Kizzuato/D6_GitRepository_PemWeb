@@ -16,6 +16,7 @@ use App\Http\Controllers\API\MQTTController;
 | PUBLIC ROUTES (tanpa login)
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return view('landing.lp-awal');
 })->name('home');
@@ -110,7 +111,7 @@ Route::middleware(['auth', 'role:admin|supervisor'])->prefix('admin')->group(fun
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
 
     // User Management
-    Route::resource('users', UserController::class)->names('admin.users');
+    Route::resource('users', UserController::class)->except(['show', 'create', 'edit'])->names('admin.users');
     Route::get('/users/export', [UserController::class, 'exportCsv'])->name('admin.users.export');
     Route::post('/users/import', [UserController::class, 'importCsv'])->name('admin.users.import');
 

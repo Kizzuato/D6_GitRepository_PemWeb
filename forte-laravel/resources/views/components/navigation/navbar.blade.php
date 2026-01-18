@@ -16,10 +16,10 @@
         {{-- Navigation Links --}}
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav align-items-center">
-                @foreach($items as $item)
+                @foreach ($items as $item)
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs($item['route']) ? 'active' : '' }}"
-                           href="{{ route($item['route']) }}">
+                            href="{{ route($item['route']) }}">
                             {{ $item['label'] }}
                         </a>
                     </li>
@@ -28,19 +28,21 @@
         </div>
 
         {{-- User Profile Pill --}}
-        @if(Auth::check())
+        @if (Auth::check())
             <div class="d-none d-lg-flex align-items-center ms-3">
-                <div class="profile-pill">
-                    <div class="avatar-circle-nav">
-                        {{ substr(Auth::user()->username ?? 'AH', 0, 2) }}
+                <div
+                    class="d-flex align-items-center gap-2 px-3 py-2 rounded-pill border border-secondary bg-dark bg-opacity-50">
+                    {{-- Avatar --}}
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-success text-white fw-semibold"
+                        style="width:35px;height:35px;font-size:0.8rem;">
+                        {{ strtoupper(substr(Auth::user()->username ?? 'AH', 0, 2)) }}
                     </div>
-                    <div class="ms-2 me-3">
-                        <div class="user-name" style="font-size:0.9rem;">
-                            {{ Auth::user()->username ?? 'User' }}
-                        </div>
-                    </div>
+
+                    {{-- Username --}}
+                    <span class="text-white small fw-medium">
+                        {{ Auth::user()->username ?? 'User' }}
+                    </span>
                 </div>
-            </div>
         @endif
     </div>
 </nav>
