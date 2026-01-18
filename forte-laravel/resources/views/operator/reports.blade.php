@@ -50,7 +50,7 @@
                             <td class="text-center">
                                 @if($r->status == 'pending')
                                     {{-- Form Approve --}}
-                                    <form action="{{ route('reports.approve', $r->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('reports.approve', $r) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-link text-success p-0 me-2">
                                             <i class="bi bi-check-circle" style="font-size: 1.2rem;"></i>
@@ -58,7 +58,7 @@
                                     </form>
 
                                     {{-- Form Reject --}}
-                                    <form action="{{ route('reports.reject', $r->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('reports.reject', $r) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-link text-danger p-0">
                                             <i class="bi bi-x-circle" style="font-size: 1.2rem;"></i>

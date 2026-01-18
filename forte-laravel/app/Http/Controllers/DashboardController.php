@@ -2,59 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Http;
+use App\Services\RaspiService;
 
+/**
+ * DashboardController: Menangani tampilan dashboard
+ * Menggunakan RaspiService untuk komunikasi dengan hardware
+ */
 class DashboardController extends Controller
 {
+    /**
+     * @var RaspiService
+     */
+    private RaspiService $raspiService;
+
+    public function __construct(RaspiService $raspiService)
+    {
+        $this->raspiService = $raspiService;
+    }
+
+    /**
+     * Show dashboard view
+     */
     public function index()
     {
         return view('dashboard');
     }
 
+    /**
+     * Fetch data dari Raspberry Pi
+     */
     public function fetchData()
     {
-        $host = config('services.raspi.host');
-        $port = config('services.raspi.port');
-
-        try {
-            $response = Http::timeout(1)->get("http://$host:$port/data");
-
-            if ($response->successful()) {
-                return response()->json([
-                    'status' => 'ok',
-                    'data' => $response->json()
-                ]);
-            }
-        } catch (\Exception $e) {
-            // raspi mati / tidak ada data
-        }
-
-        return response()->json([
-            'status' => 'offline',
-            'data' => null
-        ], 200);
+        return response()->json($this->raspiService->getLatestData());
     }
 
+    /**
+     * Check camera status
+     */
     public function cameraStatus()
     {
-        $host = config('services.raspi.host');
-        $port = config('services.raspi.port');
-
-        $videoUrl = "http://$host:$port/video";
-
-        return response()->json([
-            'front' => $this->checkCamera($videoUrl),
-            'front_url' => $videoUrl,
-        ]);
-    }
-
-
-    private function checkCamera($url)
-    {
-        try {
-            return Http::timeout(1)->head($url)->successful();
-        } catch (\Exception $e) {
-            return false;
-        }
+        return response()->json($this->raspiService->getCameraStatus());
     }
 }

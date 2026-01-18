@@ -15,9 +15,9 @@
         <nav class="w-64 bg-gray-700 text-white min-h-screen p-4">
             <ul>
                 <li class="mb-2"><a href="{{ route('admin.dashboard') }}" class="hover:underline">Dashboard</a></li>
-                <li class="mb-2"><a href="{{ route('users.index') }}" class="hover:underline">Manage Users</a></li>
-                <li class="mb-2"><a href="{{ route('sensors.index') }}" class="hover:underline">Manage Sensors</a></li>
-                <li class="mb-2"><a href="{{ route('reports.index') }}" class="hover:underline">Manage Reports</a></li>
+                <li class="mb-2"><a href="{{ route('admin.users.index') }}" class="hover:underline">Manage Users</a></li>
+                <li class="mb-2"><a href="{{ route('admin.sensors.index') }}" class="hover:underline">Manage Sensors</a></li>
+                <li class="mb-2"><a href="{{ route('admin.reports.index') }}" class="hover:underline">Manage Reports</a></li>
             </ul>
         </nav>
 

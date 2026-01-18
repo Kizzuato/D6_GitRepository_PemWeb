@@ -258,9 +258,7 @@
                     <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                    {{-- <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li> --}}
-                    <li class="nav-item ps-2"><a class="nav-link btn-daftar-nav"
-                            href="{{ route('login') }}">Login</a></li>
+                    <li class="nav-item ps-2"><a class="nav-link btn-daftar-nav" href="{{ route('login') }}">Login</a></li>
                 </ul>
             </div>
         </div>

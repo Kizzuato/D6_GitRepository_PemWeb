@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content bg-dark text-white border-secondary">
             {{-- Form Update - Method WAJIB PUT --}}
-            <form action="{{ route('users.update', $user->id) }}" method="POST">
+            <form action="{{ route('admin.users.update', $user) }}" method="POST">
                 @csrf
                 @method('PUT')
 

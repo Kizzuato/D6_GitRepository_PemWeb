@@ -276,39 +276,13 @@
 <body>
 
     {{-- Navbar --}}
-    <nav class="navbar navbar-expand-lg navbar-forte navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <img src="{{ asset('assets/img/FORTE.png') }}" alt="FORTE Logo">
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="setting">Setting</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about">About Rover</a></li>
-                </ul>
-            </div>
-
-            <div class="d-none d-lg-flex align-items-center ms-3">
-                <div class="profile-pill">
-                    <div class="avatar-circle-nav">
-                        {{-- Menampilkan inisial 2 huruf dari Auth User jika ada, default AH --}}
-                        {{ Auth::check() ? substr(Auth::user()->name, 0, 2) : 'AH' }}
-                    </div>
-                    <div class="ms-2 me-3">
-                        <div class="user-name" style="font-size:0.9rem;">
-                            {{ Auth::check() ? Auth::user()->name : 'Akhsan Hakiki' }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <x-navigation.navbar
+        :items="[
+            ['route' => 'dashboard', 'label' => 'Dashboard'],
+            ['route' => 'settings.index', 'label' => 'Setting'],
+            ['route' => 'about', 'label' => 'About Rover']
+        ]"
+    />
 
     {{-- Main Content --}}
     <div class="profile-container">

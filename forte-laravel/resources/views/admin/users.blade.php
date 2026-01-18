@@ -32,7 +32,7 @@
                                 <span class="d-inline d-sm-none">Tambah</span>
                             </button>
 
-                            <a href="{{ route('users.export') }}" class="btn btn-primary btn-sm">
+                            <a href="{{ route('admin.users.export') }}" class="btn btn-primary btn-sm">
                                 <i class="bi bi-download me-1"></i>
                                 <span class="d-none d-sm-inline">Export CSV</span>
                                 <span class="d-inline d-sm-none">Export</span>
@@ -49,7 +49,7 @@
 
                     {{-- Search Bar --}}
                     <div class="mt-4">
-                        <form action="{{ route('users.index') }}" method="GET">
+                        <form action="{{ route('admin.users.index') }}" method="GET">
                             <div class="input-group input-group-sm">
                                 <input type="text" name="search"
                                     class="form-control bg-dark text-white border border-secondary"
@@ -104,7 +104,7 @@
                                             </button>
 
                                             {{-- Button Delete --}}
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
                                                 class="d-inline delete-form">
                                                 @csrf @method('DELETE')
                                                 <button type="button"
@@ -165,7 +165,7 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('users.import') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.users.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="alert alert-info bg-info bg-opacity-10 border border-info border-opacity-25 mb-3">

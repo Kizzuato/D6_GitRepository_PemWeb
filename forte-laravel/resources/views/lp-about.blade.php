@@ -291,35 +291,13 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-forte">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
-                <img src="{{ asset('assets/img/FORTE.png') }}" alt="FORTE Logo">
-            </a>
-            <button class="navbar-toggler bg-secondary" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/setting') }}">Setting</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="about">Abouth Rover</a></li>
-                </ul>
-            </div>
-
-            <div class="d-none d-lg-flex align-items-center">
-                <div class="profile-pill">
-                    <div class="avatar-circle">AH</div>
-                    <div class="ms-2 me-3">
-                        <div class="user-name">Akhsan Hakiki</div>
-                    </div>
-                    <i class="bi bi-three-dots-vertical text-secondary" style="cursor: pointer;"></i>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <x-navigation.navbar
+        :items="[
+            ['route' => 'dashboard', 'label' => 'Dashboard'],
+            ['route' => 'settings.index', 'label' => 'Setting'],
+            ['route' => 'about', 'label' => 'About Rover']
+        ]"
+    />
 
     <div class="content-container" id="mainContent">
         <div class="bg-lines"></div>

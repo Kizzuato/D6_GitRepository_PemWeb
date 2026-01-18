@@ -58,19 +58,19 @@
                     </div>
 
                     {{-- Energy kWh --}}
-                    <div class="col-md-4">
+                    {{-- <div class="col-md-4">
                         <div class="card bg-secondary h-100">
                             <div class="card-header bg-success">Energy (kWh)</div>
                             <div class="card-body text-center">
                                 <h4 id="energyKwhCard">-</h4>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     {{-- Cost --}}
-                    <div class="col-md-4">
+                    <div class="col-md-8">
                         <div class="card bg-secondary h-100">
-                            <div class="card-header bg-success">Cost (Rp)</div>
+                            <div class="card-header bg-success">Prediksi Biaya Bulanan </div>
                             <div class="card-body text-center">
                                 <h4 id="biayaCard">-</h4>
                             </div>
@@ -171,6 +171,29 @@
                 .catch(() => stopPolling());
         }
 
+
+
+        function updateCards(e, predictedCost) {
+            biayaCard.innerText = predictedCost ? 'Rp ' + predictedCost.toLocaleString() : 'Rp ' + e.biaya_rp;
+
+            setRPM(Math.min(Math.round(e.power / 2), 100));
+            setBattery(Math.min(Math.round((e.voltage / 240) * 100), 100));
+        }
+
+        function fetchAll() {
+            document.getElementById('searchInput').addEventListener('input', () => loadLogs());
+            document.getElementById('filterDate').addEventListener('change', () => loadLogs());
+
+            fetch('/api/power/prediction')
+                .then(res => res.json())
+                .then(costData => {
+                    if (costData.predicted_cost) {
+                        biayaCard.innerText = 'Rp ' + costData.predicted_cost.toLocaleString();
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+
         function loadLogs(page = 1) {
             const search = document.getElementById('searchInput').value;
             const date = document.getElementById('filterDate').value;
@@ -183,13 +206,13 @@
 
                     res.data.forEach((r, i) => {
                         tbody.innerHTML += `
-                    <tr style="background-color:${i % 2 ? '#1a1a1a' : '#14451a'}">
-                        <td class="ps-4 text-xs">${r.created_at}</td>
-                        <td>${r.voltage}</td>
-                        <td>${r.current}</td>
-                        <td>${r.power}</td>
-                        <td>${r.energy_kwh}</td>
-                    </tr>`;
+                        <tr style="background-color:${i % 2 ? '#1a1a1a' : '#14451a'}">
+                            <td class="ps-4 text-xs">${r.created_at}</td>
+                            <td>${r.voltage}</td>
+                            <td>${r.current}</td>
+                            <td>${r.power}</td>
+                            <td>${r.energy_kwh}</td>
+                        </tr>`;
                     });
 
                     renderPagination(res);
@@ -202,9 +225,9 @@
 
             for (let i = 1; i <= res.last_page; i++) {
                 pag.innerHTML += `
-            <li class="page-item ${i === res.current_page ? 'active' : ''}">
-                <button class="page-link bg-dark text-white" onclick="loadLogs(${i})">${i}</button>
-            </li>`;
+                <li class="page-item ${i === res.current_page ? 'active' : ''}">
+                    <button class="page-link bg-dark text-white" onclick="loadLogs(${i})">${i}</button>
+                </li>`;
             }
         }
 
@@ -236,15 +259,6 @@
                 });
         }
 
-        function startPolling() {
-            if (!polling) polling = setInterval(fetchData, 1000);
-        }
-
-        function stopPolling() {
-            clearInterval(polling);
-            polling = null;
-        }
-
         function setRPM(value) {
             const arc = document.getElementById('rpmArc');
             const text = document.getElementById('rpmValue');
@@ -271,33 +285,78 @@
             }
         }
 
-        async function checkStatus() {
-            try {
-                const res = await fetch("{{ route('mqttfetch.data') }}");
-                const data = await res.json();
+        /* ===================== STATE ===================== */
+        let voltage = 225; // Volt
+        let current = 1.2; // Ampere
+        let energyWh = 0; // Akumulasi Wh
+        let lastUpdate = Date.now();
 
-                // anggap device online kalau data energi ada
-                const isOnline = data.energy && Object.keys(data.energy).length > 0;
-                setStatus(isOnline);
-            } catch (err) {
-                setStatus(false);
-            }
+        const TARIFF = 1444; // Rp / kWh
+
+        /* ===================== UTIL ===================== */
+        function rand(min, max, fixed = 2) {
+            return +(Math.random() * (max - min) + min).toFixed(fixed);
         }
 
-        document.getElementById('searchInput').addEventListener('input', () => loadLogs());
-        document.getElementById('filterDate').addEventListener('change', () => loadLogs());
+        function clamp(v, min, max) {
+            return Math.min(Math.max(v, min), max);
+        }
+
+        /* ===================== DUMMY UPDATE ===================== */
+        function updateEnergyDummy() {
+
+            const now = Date.now();
+            const deltaHour = (now - lastUpdate) / 3600000;
+            lastUpdate = now;
+
+            /* Voltage relatif stabil */
+            voltage += rand(-0.5, 0.5);
+            voltage = clamp(voltage, 215, 230);
+
+            /* Current fluktuatif */
+            current += rand(-0.05, 0.08);
+            current = clamp(current, 0.3, 3.5);
+
+            /* Power (W) */
+            const power = voltage * current;
+
+            /* Energy accumulation */
+            energyWh += power * deltaHour;
+
+            /* kWh */
+            const energyKwh = energyWh / 1000;
+
+            /* Biaya */
+            // const biaya = energyKwh * TARIFF;
+
+            /* ================= UPDATE UI ================= */
+            voltageCard.innerText = voltage.toFixed(1) + ' V';
+            currentCard.innerText = current.toFixed(2) + ' A';
+            powerCard.innerText = power.toFixed(1) + ' W';
+            energyWhCard.innerText = energyWh.toFixed(3) + ' Wh';
+            // biayaCard.innerText = 'Rp ' + Math.round(biaya).toLocaleString();
+
+            /* Status ONLINE */
+            setStatus(true);
+        }
+
+        function fetchPrediction() {
+            fetch('/api/power/prediction')
+                .then(res => res.json())
+                .then(res => {
+                    if (res.predicted_cost !== undefined) {
+                        biayaCard.innerText =
+                            'Rp ' + Number(res.predicted_cost).toLocaleString('id-ID');
+                    }
+                })
+                .catch(err => console.error('Prediction error:', err));
+        }
 
 
-        // cek pertama
-        checkStatus();
-
-        // refresh tiap 5 detik
-
-        startPolling();
-
+        setInterval(updateEnergyDummy, 1000);
+        updateEnergyDummy();
         loadLogs();
         loadChart();
-        fetchData();
-        setInterval(checkStatus, 5000);
+        fetchPrediction();
     </script>
 @endsection

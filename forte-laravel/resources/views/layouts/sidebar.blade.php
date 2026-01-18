@@ -46,7 +46,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('table-data') ? 'active' : '' }}" href="/table-data">
+                <a class="nav-link {{ request()->routeIs('table-data') ? 'active' : '' }}" href="{{ route('table-data') }}">
                     <div
                         class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-calendar-grid-58 text-white fs-4 text-sm opacity-10"></i>
@@ -69,7 +69,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin.users') ? 'active' : '' }}" href="/admin/users">
+                <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                     <div
                         class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-single-02 text-success fs-4 text-sm opacity-10"></i>
@@ -89,6 +89,15 @@
             </li> --}}
             @endhasanyrole
             @hasanyrole('supervisor')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('map') ? 'active' : '' }}" href="/map">
+                    <div
+                        class="icon icon-shape icon-sm shadow-none border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-map text-white fs-4 text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1 text-white">Map</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('admin.reports') ? 'active' : '' }}" href="/admin/reports">
                     <div

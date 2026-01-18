@@ -191,46 +191,13 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-forte navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <img src="{{ asset('assets/img/FORTE.png') }}" alt="FORTE Logo">
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="setting">Setting</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about">About Rover</a></li>
-
-                    <li class="nav-item d-lg-none w-100">
-                        <div class="profile-pill">
-                            <div class="avatar-circle">AH</div>
-                            <div class="ms-2 me-3">
-                                <div class="user-name">Akhsan Hakiki</div>
-                            </div>
-                            <i class="bi bi-three-dots-vertical options-dots"></i>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="d-none d-lg-flex align-items-center ms-3">
-                <div class="profile-pill">
-                    <div class="avatar-circle">AH</div>
-                    <div class="ms-2 me-3">
-                        <div class="user-name">Akhsan Hakiki</div>
-                    </div>
-                    <i class="bi bi-three-dots-vertical options-dots"></i>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <x-navigation.navbar
+        :items="[
+            ['route' => 'dashboard', 'label' => 'Dashboard'],
+            ['route' => 'settings.index', 'label' => 'Setting'],
+            ['route' => 'about', 'label' => 'About Rover']
+        ]"
+    />
 
     <div class="setting-container">
         <div class="bg-lines"></div>
@@ -238,7 +205,7 @@
         <div class="row g-4 justify-content-center w-100">
 
             <div class="col-auto">
-                <a href="wifi" class="card-setting">
+                <a href="{{ route('settings.wifi') }}" class="card-setting">
                     <svg width="129" height="98" viewBox="0 0 129 98" fill="none"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <rect width="129" height="98" fill="url(#pattern0_326_1485)" />
@@ -259,7 +226,7 @@
             </div>
 
             <div class="col-auto">
-                <a href="controller" class="card-setting">
+                <a href="{{route('settings.controller')}}" class="card-setting">
                     <svg width="139" height="106" viewBox="0 0 139 106" fill="none"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <rect width="139" height="106" fill="url(#pattern0_57_1702)" />
@@ -279,7 +246,7 @@
                 </a>
             </div>
             <div class="col-auto">
-                <a href="profil" class="card-setting">
+                <a href="{{ route('settings.profile') }}" class="card-setting">
                     <svg width="139" height="139" viewBox="0 0 139 139" fill="none"
                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <rect width="139" height="139" fill="url(#pattern0_90_748)" />

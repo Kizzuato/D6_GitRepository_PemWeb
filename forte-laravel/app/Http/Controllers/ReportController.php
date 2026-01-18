@@ -3,93 +3,91 @@
 namespace App\Http\Controllers;
 
 use App\Models\Report;
+use App\Services\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
+/**
+ * ReportController: Menangani HTTP requests untuk Report
+ * Menggunakan ReportService untuk business logic
+ */
 class ReportController extends Controller
 {
-    // -------------------
-    // USER METHODS
-    // -------------------
+    /**
+     * @var ReportService
+     */
+    private ReportService $reportService;
+
+    public function __construct(ReportService $reportService)
+    {
+        $this->reportService = $reportService;
+    }
+
+    /**
+     * Display user's reports
+     */
     public function index()
     {
-        if (Auth::user()->hasRole('admin|supervisor')) {
-            abort(403); // admin jangan akses route user
-        }
+        // Hanya user biasa yang bisa akses
+        $this->authorize('viewAny', Report::class);
 
-        $reports = Report::where('user_id', Auth::id())->latest()->get();
+        $reports = $this->reportService->getUserReports(Auth::id());
         return view('user.reports.index', compact('reports'));
     }
 
+    /**
+     * Store report baru
+     */
     public function store(Request $request)
     {
-        if (Auth::user()->hasRole('admin|supervisor')) {
-            abort(403); // admin jangan akses route user
-        }
+        // Hanya user biasa yang bisa akses
+        $this->authorize('create', Report::class);
 
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
-        $imagePath = null;
-        if ($request->image) {
-            $imageData = preg_replace('#^data:image/\w+;base64,#i', '', $request->image);
-            $imageData = str_replace(' ', '+', $imageData);
-            $imageBinary = base64_decode($imageData);
-
-            $filename = 'reports/' . uniqid() . '.png';
-            Storage::disk('public')->put($filename, $imageBinary);
-
-            $imagePath = $filename;
-        }
-
-        $report = Report::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'image_path' => $imagePath,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
-            'user_id' => Auth::id(),
-            'status' => 'pending',
-        ]);
+        $this->reportService->createReport(Auth::id(), $validated);
 
         return redirect()->back()->with('success', 'Laporan berhasil disimpan!');
     }
 
-    // -------------------
-    // ADMIN METHODS
-    // -------------------
+    /**
+     * Display all reports (admin only)
+     */
     public function adminIndex()
     {
-        if (!Auth::user()->hasRole('admin|supervisor')) {
-            abort(403); // user biasa nggak boleh akses admin
-        }
+        // Hanya admin/supervisor yang bisa akses
+        $this->authorize('viewAny', Report::class);
 
-        $reports = Report::latest()->get();
+        $reports = $this->reportService->getAllReports();
         return view('admin.reports', compact('reports'));
     }
 
-    public function approve($id)
+    /**
+     * Approve report (admin only)
+     */
+    public function approve(Report $report)
     {
-        if (!Auth::user()->hasRole('admin|supervisor')) abort(403);
+        $this->authorize('approve', $report);
 
-        $report = Report::findOrFail($id);
-        $report->status = 'approved';
-        $report->save();
+        $this->reportService->approveReport($report);
 
         return redirect()->back()->with('success', 'Laporan disetujui!');
     }
 
-    public function reject($id)
+    /**
+     * Reject report (admin only)
+     */
+    public function reject(Report $report)
     {
-        if (!Auth::user()->hasRole('admin|supervisor')) abort(403);
+        $this->authorize('reject', $report);
 
-        $report = Report::findOrFail($id);
-        $report->status = 'rejected';
-        $report->save();
+        $this->reportService->rejectReport($report);
 
         return redirect()->back()->with('success', 'Laporan ditolak!');
     }

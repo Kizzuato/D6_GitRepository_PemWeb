@@ -49,7 +49,7 @@ class LoginController extends Controller
             }
 
             // user biasa
-            return redirect()->route('setting');
+            return redirect()->route('settings.profile'); // route user biasa
         }
 
         return back()->with('error', 'Username atau password salah');

@@ -1,7 +1,7 @@
 <div class="modal fade" id="modalCreateUser" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content bg-dark text-white border-secondary">
-            <form action="{{ route('users.store') }}" method="POST">
+            <form action="{{ route('admin.users.store') }}" method="POST">
                 @csrf
                 <div class="modal-header border-secondary">
                     <h5 class="modal-title text-white">Tambah User Baru</h5>

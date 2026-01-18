@@ -138,10 +138,10 @@
                                     <div class="card bg-secondary h-100">
                                         <div class="card-header bg-success text-white py-2 d-flex align-items-center">
                                             <i class="ni ni-bolt me-2"></i>
-                                            <span>Daya (kWh)</span>
+                                            <span>Altitude</span>
                                         </div>
                                         <div class="card-body text-center">
-                                            <h4 class="mb-0" id="dayaCard">-</h4>
+                                            <h4 class="mb-0" id="altitudeCard">-</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -255,6 +255,8 @@
 
             const latitudeCard = document.getElementById('latitudeCard');
             const longitudeCard = document.getElementById('longitudeCard');
+            const altitudeCard = document.getElementById('altitudeCard');
+
             const dayaCard = document.getElementById('dayaCard');
             const accXCard = document.getElementById('accXCard');
             const accYCard = document.getElementById('accYCard');
@@ -262,6 +264,15 @@
 
             const reportLat = document.getElementById('reportLat');
             const reportLon = document.getElementById('reportLon');
+
+            let lat = -6.914744;
+            let lon = 107.609810;
+            let alt = 720; // ketinggian Bandung
+
+
+            let rpm = 30;
+            let battery = 100;
+
 
             /* ===================== SNAPSHOT ===================== */
             captureBtn.addEventListener('click', () => {
@@ -275,92 +286,52 @@
                 snapshotInput.value = snapshotUrl;
             });
 
-            // /* ===================== DUMMY DATA ===================== */
-            // function rand(min, max, fixed = 2) {
-            //     return (Math.random() * (max - min) + min).toFixed(fixed);
-            // }
-
-            // function updateDummy() {
-            //     const lat = rand(-90, 90);
-            //     const lon = rand(-180, 180);
-
-            //     latitudeCard.innerText = lat;
-            //     longitudeCard.innerText = lon;
-            //     dayaCard.innerText = rand(0, 100, 0);
-
-            //     accXCard.innerText = rand(-10, 10);
-            //     accYCard.innerText = rand(-10, 10);
-            //     accZCard.innerText = rand(-10, 10);
-
-            //     reportLat.value = lat;
-            //     reportLon.value = lon;
-
-            //     setRPM(Math.floor(rand(0, 100, 0)));
-            //     setBattery(Math.floor(rand(0, 100, 0)));
-            // }
-
-            // setInterval(updateDummy, 1000);
-            // updateDummy();
-
-            /* ===================== RPM ===================== */
-            function setRPM(value, max = 100) {
-                const arc = document.getElementById('rpmArc');
-                const text = document.getElementById('rpmValue');
-                const circumference = 345;
-
-                const percent = Math.min(value / max, 1);
-                arc.style.strokeDashoffset = circumference * (1 - percent);
-                text.innerText = value;
+            /* ===================== UTILS ===================== */
+            function rand(min, max, fixed = 2) {
+                return +(Math.random() * (max - min) + min).toFixed(fixed);
             }
 
-            /* ===================== BATTERY ===================== */
-            function setBattery(percent) {
-                const arc = document.getElementById('batteryArc');
-                const text = document.getElementById('batteryValue');
-                const circumference = 377;
-
-                arc.style.strokeDashoffset = circumference * (1 - percent / 100);
-                text.innerText = percent + '%';
+            function clamp(val, min, max) {
+                return Math.min(Math.max(val, min), max);
             }
 
-            function fetchMQTTData() {
-                fetch("{{ route('mqttfetch.data') }}")
-                    .then(res => res.json())
-                    .then(data => {
+            /* ===================== DUMMY UPDATE ===================== */
+            function updateDummyData() {
 
-                        /* ========== GPS ========== */
-                        if (data.gps && data.gps.lat !== undefined) {
-                            latitudeCard.innerText = data.gps.lat.toFixed(6);
-                            longitudeCard.innerText = data.gps.lon.toFixed(6);
+                /* ===== GPS ===== */
+                lat += rand(-0.00002, 0.00002, 6);
+                lon += rand(-0.00002, 0.00002, 6);
+                alt += rand(-0.3, 0.3);
 
-                            reportLat.value = data.gps.lat;
-                            reportLon.value = data.gps.lon;
-                        }
+                latitudeCard.innerText = lat.toFixed(6);
+                longitudeCard.innerText = lon.toFixed(6);
+                altitudeCard.innerText = alt.toFixed(2) + ' m';
 
-                        /* ========== ENERGY ========== */
-                        if (data.energy && data.energy.energy_kwh !== undefined) {
-                            dayaCard.innerText = data.energy.energy_kwh.toFixed(4) + ' kWh';
+                reportLat.value = lat;
+                reportLon.value = lon;
 
-                            // RPM simulasi dari power
-                            setRPM(Math.min(Math.round(data.energy.power / 2), 100));
+                /* ===== ACCELEROMETER (m/s²) ===== */
+                accXCard.innerText = rand(-0.5, 0.5);
+                accYCard.innerText = rand(-0.5, 0.5);
+                accZCard.innerText = rand(9.6, 9.9); // gravitasi
 
-                            // Battery simulasi dari voltage
-                            setBattery(Math.min(Math.round((data.energy.voltage / 240) * 100), 100));
-                        }
+                /* ===== RPM ===== */
+                rpm += rand(-3, 5, 0);
+                rpm = clamp(rpm, 0, 100);
+                setRPM(rpm);
 
-                        /* ========== IMU ========== */
-                        if (data.imu && data.imu.acc) {
-                            accXCard.innerText = data.imu.acc[0];
-                            accYCard.innerText = data.imu.acc[1];
-                            accZCard.innerText = data.imu.acc[2];
-                        }
+                /* ===== POWER (simulasi) ===== */
+                const power = rpm * 5; // watt
+                dayaCard.innerText = power.toFixed(0) + ' W';
 
-                    })
-                    .catch(err => console.error('MQTT fetch error:', err));
+                /* ===== BATTERY ===== */
+                battery -= rand(0.02, 0.08);
+                battery = clamp(battery, 10, 100);
+                setBattery(Math.round(battery));
             }
 
-            // polling tiap 1 detik
-            setInterval(fetchMQTTData, 1000);
-            fetchMQTTData();
+            /* ===================== LOOP ===================== */
+            setInterval(updateDummyData, 1000);
+            updateDummyData();
         </script>
     @endsection

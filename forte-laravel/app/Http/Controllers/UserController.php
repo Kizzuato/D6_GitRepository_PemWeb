@@ -4,98 +4,96 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Services\UserService;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * UserController: Menangani HTTP requests untuk User
+ * Menggunakan UserService untuk business logic
+ */
 class UserController extends Controller
 {
+    /**
+     * @var UserService
+     */
+    private UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    /**
+     * Display list users dengan pagination
+     */
     public function index(Request $request)
     {
         $search = $request->query('search');
-
-        $users = User::when($search, function ($query, $search) {
-            return $query->where('username', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%");
-        })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10)
-            ->withQueryString();
+        $users = $this->userService->getAllUsers($search);
 
         return view('admin.users', compact('users', 'search'));
     }
 
-
+    /**
+     * Store user baru
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'username' => 'required',
+        $validated = $request->validate([
+            'username' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:4',
+            'password' => 'required|min:4|string',
             'role' => 'required|in:user,admin',
         ]);
 
-        $user = User::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        // assign role ke user baru
-        $user->assignRole($request->role);
+        $this->userService->createUser($validated);
 
         return back()->with('success', 'User berhasil ditambahkan');
     }
 
+    /**
+     * Update user
+     */
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'username' => 'required',
+        $validated = $request->validate([
+            'username' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:4|string',
             'role' => 'required|in:user,admin',
         ]);
 
-        $user->update([
-            'username' => $request->username,
-            'email' => $request->email,
-        ]);
-
-        if ($request->password) {
-            $user->update(['password' => Hash::make($request->password)]);
-        }
-
-        // sync role (hapus role lama, assign role baru)
-        $user->syncRoles([$request->role]);
+        $this->userService->updateUser($user, $validated);
 
         return back()->with('success', 'User berhasil diupdate');
     }
 
+    /**
+     * Delete user
+     */
     public function destroy(User $user)
     {
-        $user->delete();
+        $this->userService->deleteUser($user);
         return back()->with('success', 'User berhasil dihapus');
     }
 
-    // Export CSV
-    public function exportCsv()
+    /**
+     * Export users ke CSV
+     */
+    public function exportCsv(): StreamedResponse
     {
-        $filename = 'users_' . date('Ymd_His') . '.csv';
-        $users = User::all();
+        $csvData = $this->userService->exportToCSV();
 
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$filename\"",
+            'Content-Disposition' => "attachment; filename=\"{$csvData['filename']}\"",
         ];
 
-        $callback = function () use ($users) {
+        $callback = function () use ($csvData) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['ID', 'Username', 'Email', 'Role', 'Joined At']);
-            foreach ($users as $user) {
-                fputcsv($file, [
-                    $user->id,
-                    $user->username,
-                    $user->email,
-                    $user->getRoleNames()->first() ?? 'user',
-                    $user->created_at->format('d M Y'),
-                ]);
+            fputcsv($file, $csvData['headers']);
+            foreach ($csvData['data'] as $row) {
+                fputcsv($file, $row);
             }
             fclose($file);
         };
@@ -103,28 +101,17 @@ class UserController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    // Import CSV
+    /**
+     * Import users dari CSV
+     */
     public function importCsv(Request $request)
     {
         $request->validate([
             'csv_file' => 'required|mimes:csv,txt',
         ]);
 
-        $file = $request->file('csv_file');
-        $handle = fopen($file, 'r');
-        $header = fgetcsv($handle); // skip header
-
-        while (($row = fgetcsv($handle, 1000, ',')) !== FALSE) {
-            User::updateOrCreate(
-                ['email' => $row[2]], // gunakan email sebagai unique key
-                [
-                    'username' => $row[1],
-                    'password' => Hash::make('password123'), // default password
-                ]
-            );
-        }
-
-        fclose($handle);
+        $file = $request->file('csv_file')->getRealPath();
+        $this->userService->importFromCSV($file);
 
         return redirect()->back()->with('success', 'Users berhasil diimport!');
     }

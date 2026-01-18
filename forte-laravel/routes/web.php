@@ -7,10 +7,7 @@ use App\Http\Controllers\SensorController;
 use App\Http\Controllers\LogTableController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AdminReportController;
-use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\AdminController;
-use PHPUnit\Framework\Constraint\Operator;
 use App\Http\Controllers\PowerController;
 use App\Http\Controllers\MQTTController;
 
@@ -19,80 +16,113 @@ use App\Http\Controllers\MQTTController;
 | PUBLIC ROUTES (tanpa login)
 |--------------------------------------------------------------------------
 */
+Route::get('/', function () {
+    return view('lp-awal');
+})->name('home');
 
-// Landing page
-Route::view('/', 'lp-awal')->name('home');
-Route::view('/about', 'lp-about')->name('about');
-
-// Login & Register
-Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.process');
-
-Route::get('/register', [LoginController::class, 'showRegister'])->name('register');
-Route::post('/register', [LoginController::class, 'register'])->name('register.process');
-
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/about', function () {
+    return view('lp-about');
+})->name('about');
 
 /*
 |--------------------------------------------------------------------------
-| AUTHENTICATED USER ROUTES
+| AUTHENTICATION ROUTES (Login & Register)
 |--------------------------------------------------------------------------
 */
-// Route::middleware('auth')->group(function () {
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'index'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.process');
 
-// Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/register', [LoginController::class, 'showRegister'])->name('register');
+    Route::post('/register', [LoginController::class, 'register'])->name('register.process');
+});
 
-Route::get('/power', [PowerController::class, 'index'])->name('power');
-Route::get('/api/power/log-table', [PowerController::class, 'logTable']);
-Route::get('/api/power/chart-power', [PowerController::class, 'chartPower']);
-
-
-
-Route::get('/fetch-mqtt-data', [MQTTController::class, 'getLatestData'])->name('mqttfetch.data');
-
-// Fetch realtime / camera
-Route::get('/fetch-data', [DashboardController::class, 'fetchData'])->name('fetch.data');
-Route::get('/camera/status', [DashboardController::class, 'cameraStatus'])->name('camera.status');
-
-// Sensor dashboard
-Route::get('/sensor/dashboard', [SensorController::class, 'dashboard'])->name('sensor.dashboard');
-
-// Map & Table
-Route::view('/map', 'map')->name('map');
-Route::get('/table-data', [LogTableController::class, 'index'])->name('table-data');
-
-// Settings pages
-Route::view('/setting', 'lp-setting')->name('setting');
-Route::view('/wifi', 'lp-setting-wifi')->name('wifi');
-Route::view('/controller', 'lp-setting-controller')->name('controller');
-Route::view('/profil', 'lp-setting-profile')->name('profil');
-
-
-// REPORT (laporan)
-Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
-// });
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN ONLY ROUTES (spatie role: admin|supervisor)
+| AUTHENTICATED USER ROUTES (User/Operator)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:admin|supervisor'])->group(function () {
+Route::middleware('auth')->group(function () {
+    // Dashboard & Main Views
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Fetch Data Routes
+    Route::prefix('api')->group(function () {
+        Route::get('/fetch-data', [DashboardController::class, 'fetchData'])->name('fetch.data');
+        Route::get('/camera/status', [DashboardController::class, 'cameraStatus'])->name('camera.status');
+        Route::get('/fetch-mqtt-data', [MQTTController::class, 'getLatestData'])->name('mqttfetch.data');
+    });
+
+    // Power Management
+    Route::prefix('power')->group(function () {
+        Route::get('/', [PowerController::class, 'index'])->name('power');
+        Route::prefix('api')->group(function () {
+            Route::get('/log-table', [PowerController::class, 'logTable']);
+            Route::get('/chart-power', [PowerController::class, 'chartPower']);
+            Route::get('/prediction', [PowerController::class, 'prediction']);
+            Route::get('/monthly-comparison', [PowerController::class, 'monthlyComparison']);
+        });
+    });
+
+    // Sensor Dashboard
+    Route::get('/sensor/dashboard', [SensorController::class, 'dashboard'])->name('sensor.dashboard');
+
+    // Map & Tables
+    Route::get('/map', function () {
+        return view('map');
+    })->name('map');
+
+    Route::get('/table-data', [LogTableController::class, 'index'])->name('table-data');
+
+    // Settings Pages
+    Route::prefix('settings')->group(function () {
+        Route::get('/profile', function () {
+            return view('lp-setting-profile');
+        })->name('settings.profile');
+
+        Route::get('/wifi', function () {
+            return view('lp-setting-wifi');
+        })->name('settings.wifi');
+
+        Route::get('/controller', function () {
+            return view('lp-setting-controller');
+        })->name('settings.controller');
+
+        Route::get('/', function () {
+            return view('lp-setting');
+        })->name('settings.index');
+    });
+
+    // Report Routes for Users
+    Route::resource('reports', ReportController::class)
+        ->only(['index', 'store']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN ONLY ROUTES (role: admin|supervisor)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin|supervisor'])->prefix('admin')->group(function () {
     // Admin Dashboard
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
 
-    // CRUD Resources
-    Route::resource('admin/sensors', SensorController::class);
+    // User Management
+    Route::resource('users', UserController::class);
+    Route::get('/users/export', [UserController::class, 'exportCsv'])->name('admin.users.export');
+    Route::post('/users/import', [UserController::class, 'importCsv'])->name('admin.users.import');
 
-    Route::resource('admin/users', UserController::class);
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/export', [UserController::class, 'exportCsv'])->name('users.export');
-    Route::post('/users/import', [UserController::class, 'importCsv'])->name('users.import');
+    // Sensor Management
+    Route::resource('sensors', SensorController::class);
 
-    Route::get('admin/reports', [ReportController::class, 'adminIndex'])->name('reports.index');
-    Route::post('admin/reports/{id}/approve', [ReportController::class, 'approve'])->name('reports.approve');
-    Route::post('admin/reports/{id}/reject', [ReportController::class, 'reject'])->name('reports.reject');
+    // Report Management & Approval
+    Route::prefix('reports')->group(function () {
+        Route::get('/', [ReportController::class, 'adminIndex'])->name('admin.reports.index');
+        Route::post('/{report}/approve', [ReportController::class, 'approve'])
+            ->name('reports.approve');
+        Route::post('/{report}/reject', [ReportController::class, 'reject'])
+            ->name('reports.reject');
+    });
 });

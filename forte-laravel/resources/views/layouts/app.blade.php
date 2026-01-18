@@ -92,7 +92,7 @@
                                 aria-labelledby="dropdownMenuButton">
                                 @hasanyrole('user')
                                     <li>
-                                        <a class="dropdown-item border-radius-md text text-white" href="setting">
+                                        <a class="dropdown-item border-radius-md text text-white" href="{{ route('settings.index') }}">
                                             <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path fill-rule="evenodd" clip-rule="evenodd"
